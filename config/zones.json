@@ -1,0 +1,277 @@
+[
+  {
+    "city": "Coimbatore",
+    "zones": [
+      {
+        "zone_id": "CBE_ZN_01",
+        "zone_name": "SIDCO Industrial Estate",
+        "station_id": "OPAQ_CBE_01",
+        "latitude": 10.9520,
+        "longitude": 76.9630,
+        "type": "Industrial",
+        "baseline_complaints_per_day": 3.5,
+        "scenario": "outbreak_sensitive"
+      },
+      {
+        "zone_id": "CBE_ZN_02",
+        "zone_name": "Gandhipuram Central",
+        "station_id": "OPAQ_CBE_02",
+        "latitude": 11.0168,
+        "longitude": 76.9558,
+        "type": "Commercial",
+        "baseline_complaints_per_day": 2.8,
+        "scenario": "traffic_congestion"
+      },
+      {
+        "zone_id": "CBE_ZN_03",
+        "zone_name": "Peelamedu Tech Corridor",
+        "station_id": "OPAQ_CBE_03",
+        "latitude": 11.0260,
+        "longitude": 77.0180,
+        "type": "Mixed",
+        "baseline_complaints_per_day": 2.0,
+        "scenario": "moderate"
+      },
+      {
+        "zone_id": "CBE_ZN_04",
+        "zone_name": "RS Puram Residential",
+        "station_id": "OPAQ_CBE_04",
+        "latitude": 11.0080,
+        "longitude": 76.9480,
+        "type": "Residential",
+        "baseline_complaints_per_day": 1.2,
+        "scenario": "clean_baseline"
+      },
+      {
+        "zone_id": "CBE_ZN_05",
+        "zone_name": "Saravanampatti IT Park",
+        "station_id": "OPAQ_CBE_05",
+        "latitude": 11.0780,
+        "longitude": 77.0020,
+        "type": "Suburban",
+        "baseline_complaints_per_day": 1.5,
+        "scenario": "moderate"
+      }
+    ]
+  },
+  {
+    "city": "Chennai",
+    "zones": [
+      {
+        "zone_id": "CHN_ZN_01",
+        "zone_name": "Manali Petrochemical Belt",
+        "station_id": "OPAQ_CHN_01",
+        "latitude": 13.1670,
+        "longitude": 80.2580,
+        "type": "Industrial",
+        "baseline_complaints_per_day": 4.2,
+        "scenario": "outbreak_sensitive"
+      },
+      {
+        "zone_id": "CHN_ZN_02",
+        "zone_name": "T Nagar Retail Core",
+        "station_id": "OPAQ_CHN_02",
+        "latitude": 13.0418,
+        "longitude": 80.2341,
+        "type": "Commercial",
+        "baseline_complaints_per_day": 3.0,
+        "scenario": "traffic_congestion"
+      },
+      {
+        "zone_id": "CHN_ZN_03",
+        "zone_name": "Velachery Urban Wetland",
+        "station_id": "OPAQ_CHN_03",
+        "latitude": 12.9815,
+        "longitude": 80.2180,
+        "type": "Residential",
+        "baseline_complaints_per_day": 2.2,
+        "scenario": "moderate"
+      },
+      {
+        "zone_id": "CHN_ZN_04",
+        "zone_name": "Guindy Industrial Estate",
+        "station_id": "OPAQ_CHN_04",
+        "latitude": 13.0067,
+        "longitude": 80.2030,
+        "type": "Industrial",
+        "baseline_complaints_per_day": 2.9,
+        "scenario": "moderate"
+      },
+      {
+        "zone_id": "CHN_ZN_05",
+        "zone_name": "Alwarpet Green Zone",
+        "station_id": "OPAQ_CHN_05",
+        "latitude": 13.0336,
+        "longitude": 80.2508,
+        "type": "Residential",
+        "baseline_complaints_per_day": 1.1,
+        "scenario": "clean_baseline"
+      }
+    ]
+  },
+  {
+    "city": "Bengaluru",
+    "zones": [
+      {
+        "zone_id": "BLR_ZN_01",
+        "zone_name": "Whitefield IT Cluster",
+        "station_id": "OPAQ_BLR_01",
+        "latitude": 12.9698,
+        "longitude": 77.7499,
+        "type": "Mixed",
+        "baseline_complaints_per_day": 3.8,
+        "scenario": "traffic_congestion"
+      },
+      {
+        "zone_id": "BLR_ZN_02",
+        "zone_name": "Silk Board Junction",
+        "station_id": "OPAQ_BLR_02",
+        "latitude": 12.9172,
+        "longitude": 77.6228,
+        "type": "Commercial",
+        "baseline_complaints_per_day": 4.5,
+        "scenario": "traffic_congestion"
+      },
+      {
+        "zone_id": "BLR_ZN_03",
+        "zone_name": "Peenya Industrial Area",
+        "station_id": "OPAQ_BLR_03",
+        "latitude": 13.0329,
+        "longitude": 77.5186,
+        "type": "Industrial",
+        "baseline_complaints_per_day": 3.6,
+        "scenario": "outbreak_sensitive"
+      },
+      {
+        "zone_id": "BLR_ZN_04",
+        "zone_name": "Cubbon Park Green Zone",
+        "station_id": "OPAQ_BLR_04",
+        "latitude": 12.9763,
+        "longitude": 77.5929,
+        "type": "Ecological",
+        "baseline_complaints_per_day": 0.8,
+        "scenario": "clean_baseline"
+      },
+      {
+        "zone_id": "BLR_ZN_05",
+        "zone_name": "Electronic City Tech Hub",
+        "station_id": "OPAQ_BLR_05",
+        "latitude": 12.8452,
+        "longitude": 77.6602,
+        "type": "Mixed",
+        "baseline_complaints_per_day": 2.1,
+        "scenario": "moderate"
+      }
+    ]
+  },
+  {
+    "city": "Delhi",
+    "zones": [
+      {
+        "zone_id": "DEL_ZN_01",
+        "zone_name": "Anand Vihar Trans-Yamuna",
+        "station_id": "OPAQ_DEL_01",
+        "latitude": 28.6475,
+        "longitude": 77.3159,
+        "type": "Highways/Bus Terminal",
+        "baseline_complaints_per_day": 6.5,
+        "scenario": "outbreak_sensitive"
+      },
+      {
+        "zone_id": "DEL_ZN_02",
+        "zone_name": "Jahangirpuri Industrial",
+        "station_id": "OPAQ_DEL_02",
+        "latitude": 28.7265,
+        "longitude": 77.1698,
+        "type": "Industrial",
+        "baseline_complaints_per_day": 5.4,
+        "scenario": "outbreak_sensitive"
+      },
+      {
+        "zone_id": "DEL_ZN_03",
+        "zone_name": "ITO Junction",
+        "station_id": "OPAQ_DEL_03",
+        "latitude": 28.6289,
+        "longitude": 77.2410,
+        "type": "Commercial",
+        "baseline_complaints_per_day": 4.8,
+        "scenario": "traffic_congestion"
+      },
+      {
+        "zone_id": "DEL_ZN_04",
+        "zone_name": "RK Puram South",
+        "station_id": "OPAQ_DEL_04",
+        "latitude": 28.5645,
+        "longitude": 77.1788,
+        "type": "Residential",
+        "baseline_complaints_per_day": 3.2,
+        "scenario": "moderate"
+      },
+      {
+        "zone_id": "DEL_ZN_05",
+        "zone_name": "Lodhi Estate Forest Belt",
+        "station_id": "OPAQ_DEL_05",
+        "latitude": 28.5916,
+        "longitude": 77.2255,
+        "type": "Diplomatic/Ecological",
+        "baseline_complaints_per_day": 1.4,
+        "scenario": "clean_baseline"
+      }
+    ]
+  },
+  {
+    "city": "Mumbai",
+    "zones": [
+      {
+        "zone_id": "BOM_ZN_01",
+        "zone_name": "Bandra-Kurla Complex",
+        "station_id": "OPAQ_BOM_01",
+        "latitude": 19.0660,
+        "longitude": 72.8680,
+        "type": "Financial/Transit",
+        "baseline_complaints_per_day": 2.0,
+        "scenario": "false_alarm"
+      },
+      {
+        "zone_id": "BOM_ZN_02",
+        "zone_name": "Chembur Industrial Corridor",
+        "station_id": "OPAQ_BOM_02",
+        "latitude": 19.0622,
+        "longitude": 72.8973,
+        "type": "Industrial",
+        "baseline_complaints_per_day": 4.1,
+        "scenario": "outbreak_sensitive"
+      },
+      {
+        "zone_id": "BOM_ZN_03",
+        "zone_name": "Andheri Western Hub",
+        "station_id": "OPAQ_BOM_03",
+        "latitude": 19.1197,
+        "longitude": 72.8464,
+        "type": "Commercial",
+        "baseline_complaints_per_day": 3.1,
+        "scenario": "traffic_congestion"
+      },
+      {
+        "zone_id": "BOM_ZN_04",
+        "zone_name": "Colaba Coastal Tip",
+        "station_id": "OPAQ_BOM_04",
+        "latitude": 18.9067,
+        "longitude": 72.8147,
+        "type": "Coastal Residential",
+        "baseline_complaints_per_day": 1.0,
+        "scenario": "clean_baseline"
+      },
+      {
+        "zone_id": "BOM_ZN_05",
+        "zone_name": "Borivali National Park Fringe",
+        "station_id": "OPAQ_BOM_05",
+        "latitude": 19.2288,
+        "longitude": 72.8596,
+        "type": "Ecological/Residential",
+        "baseline_complaints_per_day": 1.2,
+        "scenario": "clean_baseline"
+      }
+    ]
+  }
+]

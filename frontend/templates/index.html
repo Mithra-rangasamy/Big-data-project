@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality & Public Health Early-Warning System | CIT 21MDS56</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Leaflet Heatmap Plugin -->
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css?v=2.3">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="brand">
+            <span class="brand-icon">🛡️</span>
+            <div>
+                <div class="brand-title">Multi-City Air Quality & Public Health Early-Warning System</div>
+                <div class="brand-subtitle">CIT 21MDS56 Big Data Computing Laboratory &bull; Multi-Modal Hadoop/Hive/Pig/Mongo Fusion</div>
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <!-- Language Switcher (Feature K) -->
+            <div class="lang-switch-group" style="display:flex; gap:3px; background:#0f172a; padding:3px; border-radius:6px; border:1px solid #334155;">
+                <button class="btn btn-sm lang-btn active" data-lang="en" style="padding:4px 8px; font-size:11px; font-weight:700;">EN</button>
+                <button class="btn btn-sm lang-btn" data-lang="ta" style="padding:4px 8px; font-size:11px; font-weight:700;">தமிழ்</button>
+                <button class="btn btn-sm lang-btn" data-lang="hi" style="padding:4px 8px; font-size:11px; font-weight:700;">हिंदी</button>
+            </div>
+
+            <!-- Portal Links -->
+            <a href="/check" class="btn btn-secondary" title="Feature M: Check My Area Citizen Portal" style="font-size:12px;">📍 Check My Area</a>
+            <a href="/status" class="btn btn-secondary" title="Feature G: Pipeline Status" style="font-size:12px;">⚙️ Pipeline Status</a>
+            <a href="/alerts" class="btn btn-secondary" title="Feature I: Active Outbreak Alerts" style="font-size:12px;">🚨 Alerts</a>
+            <a href="/api/export/ranking.csv" class="btn btn-secondary" title="Feature L: Download CSV" style="font-size:12px;">📥 Export CSV</a>
+            <a href="/admin" class="btn btn-secondary" title="Feature O: Admin Console" style="font-size:12px;">🔐 Admin</a>
+
+            <select id="date-select" class="date-select">
+                <option value="2026-10-13">Loading dates...</option>
+            </select>
+
+            
+            <button id="btn-use-location" class="btn btn-secondary" title="Auto-detect nearest zone via GPS">
+                📍 My Location
+            </button>
+
+            <button id="btn-share" class="btn btn-secondary" title="Share current zone air quality advisory">
+                📤 Share
+            </button>
+
+            <button id="btn-start-tour" class="btn btn-secondary" style="border-color:#38bdf8; color:#38bdf8;" title="Take a 4-step interactive guided tour">
+                🧭 Take Tour
+            </button>
+
+            <button id="btn-trigger-pipeline" class="btn btn-secondary" title="Recalculate Pig fusion engine">
+                🔄 Recalculate
+            </button>
+
+            <button id="btn-report-symptom" class="btn btn-danger">
+                📢 Report Symptoms
+            </button>
+        </div>
+    </header>
+
+    <!-- Top Key Metrics Banner -->
+    <section class="metrics-grid">
+        <div class="metric-card">
+            <span class="metric-label">Monitored Urban Zones</span>
+            <span class="metric-value" id="metric-monitored-zones">25</span>
+            <span class="metric-sub">Across 5 Metropolitan Hubs</span>
+        </div>
+
+        <div class="metric-card">
+            <span class="metric-label">Critical / Red Zones</span>
+            <span class="metric-value badge-red" id="metric-red-zones">--</span>
+            <span class="metric-sub">Health Risk Score &ge; 75</span>
+        </div>
+
+        <div class="metric-card" id="card-compound-alerts">
+            <span class="metric-label">Active Compound Alerts</span>
+            <span class="metric-value badge-red" id="metric-compound-alerts">--</span>
+            <span class="metric-sub">High AQI + Surging Illness</span>
+        </div>
+
+        <div class="metric-card">
+            <span class="metric-label">Citizen Reports Ingested</span>
+            <span class="metric-value badge-orange" id="metric-total-complaints">--</span>
+            <span class="metric-sub">MongoDB Unstructured Telemetry</span>
+        </div>
+
+        <div class="metric-card">
+            <span class="metric-label">Peak Ambient AQI</span>
+            <span class="metric-value badge-red" id="metric-peak-aqi">--</span>
+            <span class="metric-sub" id="metric-peak-zone">Analyzing...</span>
+        </div>
+    </section>
+
+    <!-- Main Content Area: Map + Side Panel -->
+    <div class="dashboard-layout">
+        <!-- Left: Interactive Leaflet Map -->
+        <div class="map-container">
+            <div id="map"></div>
+
+            <!-- Regional Zoom & Layer Controls Toolbar -->
+            <div class="map-controls-bar">
+                <span style="font-size:11px; font-weight:700; color:#38bdf8; text-transform:uppercase; margin-right:4px;">Jump to:</span>
+                <button class="btn btn-secondary city-btn active" data-city="tn">🚩 All Tamil Nadu (30 Districts)</button>
+                <button class="btn btn-secondary city-btn" data-city="coimbatore">Coimbatore (CIT Hub)</button>
+                <button class="btn btn-secondary city-btn" data-city="chennai">Chennai Metro</button>
+                <button class="btn btn-secondary city-btn" data-city="madurai">Madurai</button>
+                <button class="btn btn-secondary city-btn" data-city="trichy_salem">Trichy & Salem</button>
+                <button class="btn btn-secondary city-btn" data-city="all">All-India (Delhi, Mumbai, BLR)</button>
+
+                <div style="margin-left:auto; display:flex; gap:6px;">
+                    <!-- Heatmap Toggle (Feature L) -->
+                    <button id="btn-toggle-heatmap" class="btn btn-secondary" style="font-size:11px;">🔥 Heatmap: OFF</button>
+                    <!-- Facilities Toggle (Feature J) -->
+                    <button id="btn-toggle-facilities" class="btn btn-secondary" style="font-size:11px;">🏥 Hospitals: ON</button>
+                </div>
+            </div>
+
+            <!-- Time-Slider Replay Control (Feature L) -->
+            <div style="background:#0f172a; padding:8px 16px; border-top:1px solid #334155; display:flex; align-items:center; gap:12px;">
+                <button id="btn-play-slider" class="btn btn-sm btn-secondary" style="font-size:12px; padding:3px 10px;">▶ Play Replay</button>
+                <span style="font-size:12px; color:#94a3b8; font-weight:600;">7-Day Time Slider:</span>
+                <input type="range" id="time-slider" min="0" max="6" value="6" style="flex:1; accent-color:#38bdf8; cursor:pointer;">
+                <span id="slider-date-label" style="font-size:12px; font-weight:700; color:#38bdf8; min-width:85px;">2026-10-13</span>
+            </div>
+
+            <!-- Legend Overlay -->
+            <div class="map-legend">
+                <div class="legend-title">Composite Health Risk Tier</div>
+                <div class="legend-item"><span class="legend-color legend-green"></span> Green &bull; Normal Baseline (&lt; 25)</div>
+                <div class="legend-item"><span class="legend-color legend-yellow"></span> Yellow &bull; Moderate Alert (25 - 49)</div>
+                <div class="legend-item"><span class="legend-color legend-orange"></span> Orange &bull; High Vulnerability (50 - 74)</div>
+                <div class="legend-item"><span class="legend-color legend-red"></span> Red &bull; Hazardous Risk (&ge; 75)</div>
+                <div class="legend-item"><span class="legend-color legend-compound"></span> 🚨 Pulsing &bull; Compound Convergence</div>
+                <div class="legend-item"><span class="legend-color" style="background:#6c757d;"></span> ⚠️ Grey &bull; Sensor Stale (&gt;3h)</div>
+            </div>
+        </div>
+
+        <!-- Right Surveillance & Advisory Panel -->
+        <aside class="side-panel">
+            <div class="panel-tabs">
+                <button class="tab-btn active" data-tab="tab-tn-districts">🗺️ TN Districts</button>
+                <button class="tab-btn" data-tab="tab-advisories">📢 Advisories & Alerts</button>
+                <button class="tab-btn" data-tab="tab-ranking">🏛 Municipal Ranking</button>
+                <button class="tab-btn" data-tab="tab-symptoms">📊 Citizen Symptoms</button>
+            </div>
+
+            <div class="panel-body">
+                <!-- Tab 0: Tamil Nadu State-Wide District Surveillance -->
+                <div id="tab-tn-districts" class="tab-pane active">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                        <h4 style="font-size:0.85rem; color:#fff; text-transform:uppercase; letter-spacing:0.05em;">
+                            Tamil Nadu District Matrix
+                        </h4>
+                        <span style="background:#0284c7; color:#fff; padding:2px 7px; border-radius:4px; font-size:10px; font-weight:bold;">30 Districts</span>
+                    </div>
+                    <div id="tn-districts-list">
+                        <div style="color:#94a3b8; font-size:12px; text-align:center; padding:1.5rem;">
+                            Loading Tamil Nadu district surveillance data...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 1: Plain-Language Advisories & Vulnerable Groups (Features B & K) -->
+                <div id="tab-advisories" class="tab-pane">
+                    <!-- Demographic Group Selector (Feature B) -->
+                    <div style="margin-bottom:0.75rem;">
+                        <div style="font-size:11px; color:#94a3b8; font-weight:700; text-transform:uppercase; margin-bottom:4px;">
+                            👥 Vulnerable Group Filter (Feature B):
+                        </div>
+                        <div style="display:flex; flex-wrap:wrap; gap:4px;" id="group-buttons">
+                            <button class="btn btn-sm btn-secondary group-filter-btn active" data-group="general_public" style="font-size:10px; padding:3px 7px;">General</button>
+                            <button class="btn btn-sm btn-secondary group-filter-btn" data-group="children" style="font-size:10px; padding:3px 7px;">Children (&lt;12)</button>
+                            <button class="btn btn-sm btn-secondary group-filter-btn" data-group="elderly" style="font-size:10px; padding:3px 7px;">Elderly (65+)</button>
+                            <button class="btn btn-sm btn-secondary group-filter-btn" data-group="asthma_cardiac" style="font-size:10px; padding:3px 7px;">Asthma / Heart</button>
+                            <button class="btn btn-sm btn-secondary group-filter-btn" data-group="pregnant_women" style="font-size:10px; padding:3px 7px;">Pregnant</button>
+                            <button class="btn btn-sm btn-secondary group-filter-btn" data-group="outdoor_workers" style="font-size:10px; padding:3px 7px;">Outdoor Workers</button>
+                        </div>
+                    </div>
+
+                    <div id="advisories-list">
+                        <div style="color:#94a3b8; font-size:12px; text-align:center; padding:2rem;">
+                            Loading fused risk advisories...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: City & Zone Vulnerability Ranking -->
+                <div id="tab-ranking" class="tab-pane">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                        <h4 style="font-size:0.85rem; color:#fff; text-transform:uppercase; letter-spacing:0.05em; margin:0;">
+                            City Vulnerability Matrix
+                        </h4>
+                        <a href="/api/export/ranking.csv" class="btn btn-sm btn-secondary" style="font-size:11px; padding:2px 8px;">📥 CSV</a>
+                    </div>
+                    <table class="ranking-table">
+                        <thead>
+                            <tr>
+                                <th>City</th>
+                                <th>Red</th>
+                                <th>Orange</th>
+                                <th>Reports</th>
+                                <th>Avg Risk</th>
+                                <th>Alert</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-tbody">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                    <div style="margin-top:1rem; font-size:0.75rem; color:#94a3b8; line-height:1.4;">
+                        <em>Prioritized based on composite risk scores computed via Apache Pig joining Hive daily aggregates and MongoDB complaint densities.</em>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Citizen Symptoms Breakdown -->
+                <div id="tab-symptoms" class="tab-pane">
+                    <h4 style="font-size:0.85rem; color:#fff; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        Reported Symptoms Breakdown (MongoDB)
+                    </h4>
+                    <div id="symptoms-bar-container">
+                        <!-- Progress bars injected dynamically -->
+                    </div>
+
+                    <h4 style="font-size:0.85rem; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        Recent Citizen Submissions
+                    </h4>
+                    <div id="recent-complaints-feed">
+                        <!-- Feed injected dynamically -->
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Modal 1: Zone Historical Trend Deep-Dive (Features A, C, H, J) -->
+    <div id="modal-trend" class="modal-overlay">
+        <div class="modal-box" style="max-width: 900px;">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title" id="modal-trend-title">Zone Surveillance Deep-Dive</div>
+                    <div id="modal-scenario-badge" style="margin-top:0.35rem;"></div>
+                </div>
+                <button class="modal-close">&times;</button>
+            </div>
+
+            <!-- Feature A: 6-Pollutant Grid & Dominant Pollutant Badge -->
+            <div id="modal-pollutants-section" style="margin-bottom:15px; background:#0f172a; padding:12px; border-radius:8px; border:1px solid #334155;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <div style="font-size:12px; font-weight:700; color:#38bdf8; text-transform:uppercase;">
+                        🔬 6-Pollutant Analytics (Feature A)
+                    </div>
+                    <span id="modal-dominant-badge" style="background:#dc2626; color:#fff; padding:3px 8px; border-radius:4px; font-size:11px; font-weight:800;">
+                        Dominant: PM2.5
+                    </span>
+                </div>
+                <div id="modal-pollutants-grid" style="display:grid; grid-template-columns: repeat(6, 1fr); gap:8px;">
+                    <!-- Dynamic pollutant cards -->
+                </div>
+                <div id="modal-dominant-notice" style="margin-top:8px; font-size:12px; color:#cbd5e1; line-height:1.4;">
+                    <!-- Notice -->
+                </div>
+            </div>
+
+            <!-- Trend & Forecast Chart (Features C & H) -->
+            <div style="height: 320px; position: relative; margin-bottom: 15px;">
+                <canvas id="trendChart"></canvas>
+            </div>
+
+            <!-- Feature J: Nearest Emergency Hospital Bar -->
+            <div id="modal-hospital-bar" style="background:rgba(2, 132, 199, 0.12); border-left:4px solid #0284c7; padding:10px 14px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <div style="font-size:11px; color:#38bdf8; font-weight:700; text-transform:uppercase;">🏥 Nearest Emergency Hospital (Feature J)</div>
+                    <div id="modal-hosp-name" style="font-size:13px; font-weight:700; color:#fff;">--</div>
+                    <div id="modal-hosp-specialty" style="font-size:11px; color:#94a3b8;">--</div>
+                </div>
+                <div style="text-align:right;">
+                    <span id="modal-hosp-dist" style="font-size:15px; font-weight:800; color:#38bdf8;">-- km</span>
+                    <div id="modal-hosp-phone" style="font-size:11px; color:#cbd5e1;">📞 --</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Citizen Symptom Report Form (Feature E) -->
+    <div id="modal-complaint" class="modal-overlay">
+        <div class="modal-box" style="max-width: 550px;">
+            <div class="modal-header">
+                <div class="modal-title">🚨 Report Air Quality & Health Symptoms</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="complaint-form">
+                <div class="form-group">
+                    <label class="form-label" for="report-zone-select">Select Your Zone / Locality *</label>
+                    <select id="report-zone-select" class="form-control" required>
+                        <option value="">-- Choose Monitored Zone --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="report-citizen-name">Your Name (Optional)</label>
+                    <input type="text" id="report-citizen-name" class="form-control" placeholder="e.g. Ramesh Kumar">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Symptoms Currently Experienced *</label>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="symptoms" value="cough"> 😷 Persistent Cough
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="symptoms" value="shortness_of_breath"> 🫁 Breathlessness / Wheezing
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="symptoms" value="eye_irritation"> 👁️ Eye Burning / Redness
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="symptoms" value="throat_irritation"> 🗣️ Throat Irritation / Phlegm
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="symptoms" value="chest_tightness"> 💔 Chest Tightness / Pain
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="symptoms" value="headache"> 🤕 Severe Headache / Dizziness
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Severity Level *</label>
+                    <div style="display:flex; gap:1.5rem; font-size:0.85rem;">
+                        <label style="cursor:pointer;"><input type="radio" name="severity" value="mild"> Mild</label>
+                        <label style="cursor:pointer;"><input type="radio" name="severity" value="moderate" checked> Moderate</label>
+                        <label style="cursor:pointer;"><input type="radio" name="severity" value="severe"> Severe</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="report-age-group">Age Category</label>
+                    <select id="report-age-group" class="form-control">
+                        <option value="adult">Adult (19 - 59)</option>
+                        <option value="child">Child (&lt; 12)</option>
+                        <option value="teen">Teenager (12 - 18)</option>
+                        <option value="senior">Senior Citizen (60+)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="report-desc">Additional Observations / Odor (Min. 4 characters)</label>
+                    <textarea id="report-desc" class="form-control" rows="2" placeholder="e.g., Heavy chemical burning smell near factory campus since 6 PM" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-danger" style="width:100%; padding:0.75rem; font-size:0.95rem; justify-content:center;">
+                    📢 Submit to Early-Warning Network
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 3: Tamil Nadu District Surveillance Deep-Dive -->
+    <div id="modal-district-details" class="modal-overlay">
+        <div class="modal-box" style="max-width: 580px;">
+            <div class="modal-header">
+                <div class="modal-title" id="modal-district-title">District Surveillance</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            
+            <div id="modal-district-alert-banner" style="background:#dc2626; color:#fff; padding:8px 12px; border-radius:6px; font-size:12px; margin-bottom:12px; display:none;"></div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                <div style="background:#0f172a; padding:10px; border-radius:6px; border:1px solid #334155;">
+                    <div style="font-size:10px; color:#94a3b8; text-transform:uppercase; font-weight:700;">Health Risk Index</div>
+                    <div style="font-size:20px; font-weight:800; color:#38bdf8; margin-top:2px;" id="modal-district-risk">--</div>
+                </div>
+                <div style="background:#0f172a; padding:10px; border-radius:6px; border:1px solid #334155;">
+                    <div style="font-size:10px; color:#94a3b8; text-transform:uppercase; font-weight:700;">Ambient AQI Exposure</div>
+                    <div style="font-size:20px; font-weight:800; color:#fff; margin-top:2px;" id="modal-district-aqi">--</div>
+                </div>
+            </div>
+
+            <div style="background:#0f172a; padding:12px; border-radius:6px; border:1px solid #334155; margin-bottom:12px; font-size:12px; line-height:1.6;">
+                <div><span style="color:#94a3b8;">Classification:</span> <strong id="modal-district-type" style="color:#cbd5e1;">--</strong></div>
+                <div><span style="color:#94a3b8;">Key Industrial Driver:</span> <span id="modal-district-industry" style="color:#cbd5e1;">--</span></div>
+                <div><span style="color:#94a3b8;">Dominant Symptoms:</span> <span id="modal-district-symptom" style="color:#ef4444; font-weight:bold;">--</span></div>
+                <div><span style="color:#94a3b8;">Reported Morbidity:</span> <span id="modal-district-complaints" style="color:#f97316; font-weight:bold;">--</span></div>
+            </div>
+
+            <div style="background:rgba(2, 132, 199, 0.12); border-left:4px solid #0284c7; padding:10px 12px; border-radius:4px; font-size:12px; color:#e2e8f0; line-height:1.4;">
+                <strong style="color:#38bdf8;">📢 Public Health & Municipal Directive:</strong>
+                <p style="margin-top:4px;" id="modal-district-advisory">--</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Script -->
+    <script src="/static/js/dashboard.js?v=3.0"></script>
+
+    <!-- Guided Tour Popover -->
+    <div id="tour-popover" class="tour-popover" style="display:none; position:absolute; z-index:9999; background:#1e293b; border:2px solid #38bdf8; border-radius:8px; padding:16px; width:300px; box-shadow:0 10px 25px rgba(0,0,0,0.6); color:#f8fafc;">
+        <div class="tour-step-counter" id="tour-step" style="font-size:10px; font-weight:800; color:#38bdf8; text-transform:uppercase; margin-bottom:4px;">Step 1 of 4</div>
+        <div class="tour-popover-title" id="tour-title" style="font-size:14px; font-weight:700; color:#fff; margin-bottom:6px;">Geographic Surveillance Map</div>
+        <div class="tour-popover-body" id="tour-body" style="font-size:12px; color:#cbd5e1; line-height:1.5; margin-bottom:12px;">
+            Interactive Leaflet map displaying 25 monitored urban zones and Tamil Nadu 30-district choropleth with real-time risk tiers.
+        </div>
+        <div class="tour-popover-actions" style="display:flex; justify-content:space-between; align-items:center;">
+            <button id="tour-btn-skip" class="btn btn-sm btn-outline" style="font-size:11px; padding:3px 8px;">Skip</button>
+            <div style="display:flex; gap:6px;">
+                <button id="tour-btn-back" class="btn btn-sm btn-secondary" style="display:none; font-size:11px; padding:3px 8px;">Back</button>
+                <button id="tour-btn-next" class="btn btn-sm btn-primary" style="font-size:11px; padding:3px 8px;">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Small Toast Notification -->
+    <div id="toast-notice" class="toast-notice" style="display:none; position:fixed; bottom:24px; right:24px; z-index:99999; background:#0284c7; color:#fff; padding:10px 18px; border-radius:6px; font-size:13px; font-weight:600; box-shadow:0 8px 20px rgba(0,0,0,0.5);">
+        Notice
+    </div>
+
+</body>
+</html>

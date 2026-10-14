@@ -1,0 +1,62 @@
+<workflow-app name="air-quality-ews-pipeline" xmlns="uri:oozie:workflow:0.5">
+    <start to="ingestion-action"/>
+
+    <!-- Action 1: Ingestion & Raw HDFS Landing -->
+    <action name="ingestion-action">
+        <shell xmlns="uri:oozie:shell-action:0.3">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <exec>python3</exec>
+            <argument>ingestion/aqi_ingest.py</argument>
+            <argument>30</argument>
+            <capture-output/>
+        </shell>
+        <ok to="hive-agg-action"/>
+        <error to="pipeline-failed"/>
+    </action>
+
+    <!-- Action 2: Hive Structured MapReduce Aggregation -->
+    <action name="hive-agg-action">
+        <hive2 xmlns="uri:oozie:hive2-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <jdbc-url>jdbc:hive2://localhost:10000/air_quality_ews</jdbc-url>
+            <script>hive/daily_aqi_agg.hql</script>
+        </hive2>
+        <ok to="mongo-export-action"/>
+        <error to="pipeline-failed"/>
+    </action>
+
+    <!-- Action 3: MongoDB Aggregation & HDFS TSV Export -->
+    <action name="mongo-export-action">
+        <shell xmlns="uri:oozie:shell-action:0.3">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <exec>python3</exec>
+            <argument>mongo/export_aggregation.py</argument>
+            <capture-output/>
+        </shell>
+        <ok to="pig-fusion-action"/>
+        <error to="pipeline-failed"/>
+    </action>
+
+    <!-- Action 4: Apache Pig Fusion Join & Composite Risk Scoring -->
+    <action name="pig-fusion-action">
+        <pig>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <script>pig/fusion.pig</script>
+            <param>AQI_INPUT=/data/processed/daily_aqi_agg</param>
+            <param>COMPLAINTS_INPUT=/data/processed/complaint_agg</param>
+            <param>OUTPUT_DIR=/data/processed/zone_risk_score</param>
+        </pig>
+        <ok to="pipeline-success"/>
+        <error to="pipeline-failed"/>
+    </action>
+
+    <kill name="pipeline-failed">
+        <message>Air Quality Early Warning pipeline failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+
+    <end name="pipeline-success"/>
+</workflow-app>

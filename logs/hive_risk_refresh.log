@@ -1,0 +1,12 @@
+Connecting to jdbc:hive2://localhost:10000
+Connected to: Apache Hive (version 4.0.1)
+Driver: Hive JDBC (version 4.0.1)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://localhost:10000> -- ==============================================================================
+0: jdbc:hive2://localhost:10000> -- CIT 21MDS56: Air Quality & Public Health Early-Warning System
+0: jdbc:hive2://localhost:10000> -- hive/create_risk_table.hql - External Table for Pig Fusion Risk Scores
+0: jdbc:hive2://localhost:10000> -- ==============================================================================
+0: jdbc:hive2://localhost:10000> 
+0: jdbc:hive2://localhost:10000> USE air_quality_ews;
+Error: Error while compiling statement: FAILED: SemanticException [Error 10072]: Database does not exist: air_quality_ews (state=42000,code=10072)
+Closing: 0: jdbc:hive2://localhost:10000

@@ -1,0 +1,188 @@
+# Implementation Plan: Additional Features A–O & Final Verification
+
+This plan details the implementation of **Phase 9 (Features A–O in user-specified priority order)** and **Phase 10 (Testing, Documentation, and Final Checklist)** for the Multi-City Air Quality & Public Health Early-Warning System (CIT 21MDS56 Big Data Computing Laboratory).
+
+---
+
+## User Review Required
+
+> [!IMPORTANT]
+> The features will be implemented in the exact priority order requested by the user:
+> **A $\rightarrow$ B $\rightarrow$ F $\rightarrow$ C $\rightarrow$ D $\rightarrow$ E $\rightarrow$ G $\rightarrow$ H $\rightarrow$ I $\rightarrow$ J $\rightarrow$ K $\rightarrow$ L $\rightarrow$ M $\rightarrow$ N $\rightarrow$ O**.
+> No features will be stubbed or simulated; all data will be backed by MongoDB, Hive, HDFS, and Pig MapReduce.
+
+> [!NOTE]
+> All existing features (core ingestion, Hive daily aggregation, MongoDB aggregation, Pig fusion engine, Tamil Nadu district boundaries and choropleth) remain fully operational and will be integrated with the new capabilities.
+
+---
+
+## Proposed Changes & Feature Breakdown
+
+### 1. Feature A: Pollutant Analytics
+- **Hive & Data Layer**: Hive table `aqi_readings` already contains `pm25, pm10, no2, so2, co, o3`. We will compute daily zone-level averages and CPCB sub-index ratios for each pollutant.
+- **Dominant Pollutant Engine**: Compute dominant pollutant based on CPCB standard break-point normalization:
+  $$\text{Ratio}_p = \frac{\text{Concentration}_p}{\text{Standard}_p}$$
+  where standard thresholds are $PM_{2.5}: 60, PM_{10}: 100, NO_2: 80, SO_2: 80, CO: 2.0, O_3: 100$.
+- **Endpoint**: `GET /api/zones/<id>/pollutants` returning hourly time series, 24h averages, dominant pollutant, and individual sub-indices.
+- **UI Integration**: Add pollutant breakdown bar/radar chart in the zone drill-down modal and state the dominant pollutant in advisories (e.g. *"PM2.5 is the primary respiratory concern today"*).
+
+### 2. Feature B: Vulnerable-Group Advisories
+- **Configuration (`config/advisories.json`)**: Create structured advisory templates for:
+  - `children`
+  - `elderly`
+  - `asthma_cardiac`
+  - `pregnant_women`
+  - `outdoor_workers`
+  - `general_public`
+  across all 4 risk tiers (Green, Yellow, Orange, Red) and Compound Alert mode.
+- **Endpoint**: `GET /api/advisory?zone=<id>&group=<g>&lang=<l>`.
+- **UI Integration**: Demographic group selector buttons in the advisory panel.
+
+### 3. Feature F: Data Freshness and Quality Monitor
+- **Monitoring Engine**: For each station/zone, track the latest reading timestamp and calculate the percentage of expected readings received in the last 24 hours.
+- **Stale Detection**: If no readings are received for $> 3$ hours, designate station status as `STALE`.
+- **Safety Rule**: Stale/missing data is **never** defaulted to "Green"; it is rendered with a grey striped pattern / warning marker `DATA UNAVAILABLE / SENSOR STALE`.
+- **UI Integration**: Stale station status badge and warning banners in the UI and `/status` dashboard.
+
+### 4. Feature C: Anomaly Detection
+- **Statistical Plume Detection**: Compute rolling mean $\mu$ and standard deviation $\sigma$ of AQI per zone over 7-day sliding windows.
+- **Z-Score Calculation**: Calculate $z = \frac{AQI - \mu}{\sigma}$. If $|z| > 2.5$, mark `spike = true` (sudden industrial plume or sensor glitch).
+- **Endpoint**: `GET /api/anomalies` listing all detected anomaly spikes.
+- **UI Integration**: Highlight spike points on Chart.js trend charts with red hazard icons; display detected anomalies table in the admin panel.
+
+### 5. Feature D: Lag-Correlation Analysis
+- **Pearson Lag Correlation Engine**: Compute cross-correlation between daily AQI and daily citizen complaints at lags $k \in \{0, 1, 2, 3\}$ days:
+  $$r_k = \frac{\sum (AQI_{t-k} - \bar{A})(Complaints_t - \bar{C})}{\sqrt{\sum (AQI_{t-k} - \bar{A})^2 \sum (Complaints_t - \bar{C})^2}}$$
+- **Hive Table**: Store results in external Hive table `aqi_complaint_correlation`.
+- **Endpoint**: `GET /api/correlation`.
+- **UI Integration**: Render a lag-correlation bar chart on the dashboard demonstrating that citizen symptom complaints typically peak 1–2 days after severe AQI spikes.
+
+### 6. Feature E: Complaint Quality Filter
+- **Sanitization Pipeline**: Implement a pre-aggregation validation gate for MongoDB:
+  - Deduplication: Same text + zone within 1 hour $\rightarrow$ duplicate.
+  - Rate limiting: Same reporter/IP $> 5$ times per day $\rightarrow$ down-weighted / flagged.
+  - Spam detection: Strings $< 4$ chars or repeated character spam (`aaaaaa`, `.....`).
+- **Audit Collection**: Rejected submissions are preserved in MongoDB `rejected_reports` with explicit `rejection_reason`.
+- **Clean Ingestion**: Only validated complaints flow to `/data/processed/complaint_agg` and Pig.
+
+### 7. Feature G: Pipeline Status Page (`/status`)
+- **Execution Tracking**: Track run timestamp, records processed, duration, and status for each pipeline phase:
+  1. Ingestion
+  2. Hive Daily Aggregation
+  3. Mongo Complaint Aggregation
+  4. Apache Pig MapReduce Fusion
+  5. Cache & Metastore Synchronization
+- **MongoDB Persistence**: Store logs in MongoDB collection `pipeline_runs`.
+- **Endpoint & View**: `GET /api/status` and web route `/status` rendering an interactive stage timeline with health status cards.
+
+### 8. Feature H: AQI Forecast
+- **Explainable Time-Series Forecasting**: Compute next-24h hourly AQI using a diurnal moving average model combined with 3-day linear momentum.
+- **Endpoint**: `GET /api/forecast/<zone_id>`.
+- **UI Integration**: Display forecast as a dashed line with a "Forecast (Next 24h)" badge on the trend modal.
+- **Documentation**: Detail methodology, confidence bounds, and limitations in `docs/forecast.md`.
+
+### 9. Feature I: Alert Notifications and History
+- **Alert History Collection**: Log all Red and Compound Alerts into MongoDB `alert_history`.
+- **Cooldown Mechanism**: Enforce a 6-hour per-zone cooldown to prevent notification fatigue.
+- **Notification Dispatcher**: Configurable email/Telegram alert service via `.env` (default disabled for offline lab mode).
+- **Endpoint & View**: `GET /api/alerts` and `/alerts` web view with filterable historical alert table.
+
+### 10. Feature J: Nearby Facilities
+- **Facilities Registry (`config/facilities.json`)**: Sample hospitals (with emergency respiratory units) and schools with GPS coordinates per city/district.
+- **Proximity Calculation**: Haversine distance calculation to identify facilities within 3 km of Orange/Red zones.
+- **Endpoint**: `GET /api/facilities/nearby?zone=<id>`.
+- **UI Integration**: Display hospital (🏥) and school (🏫) markers on the Leaflet map and list suggested municipal emergency interventions.
+
+### 11. Feature K: Multilingual Advisories
+- **Translations**: Provide full advisory texts in:
+  - **English (EN)**
+  - **Tamil (TA - தமிழ்)** (e.g. *"கடுமையான காற்று மாசுபாடு எச்சரிக்கை. N95 முகக்கவசம் அணியவும்."*)
+  - **Hindi (HI - हिंदी)** (e.g. *"गंभीर वायु प्रदूषण चेतावनी। N95 मास्क पहनें।"*)
+- **Endpoint**: `GET /api/advisory?zone=<id>&group=<g>&lang=<l>`.
+- **UI Integration**: Language switcher dropdown `[EN | தமிழ் | हिंदी]` in dashboard header with instantaneous dynamic re-rendering.
+
+### 12. Feature L: Map Enhancements & Export
+- **Heatmap Layer**: Integrate `leaflet-heat.js` toggle showing continuous pollution density across Tamil Nadu and India.
+- **Historical Time Slider**: Interactive 7-day replay slider allowing users to scrub through daily risk level progressions.
+- **CSV Export**: `GET /api/export/ranking.csv` generating downloadable CSV of ranked zones, risk scores, complaints, and advisories.
+
+### 13. Feature M: "Check My Area" Citizen Page (`/check`)
+- **Citizen Portal**: Standalone, clean page where citizens pick City + Zone/District and immediately view:
+  - Current Risk Level & Badge
+  - Dominant Pollutant ($PM_{2.5}, PM_{10}$)
+  - Tailored Demographic Advisory in their selected language
+  - Nearest Emergency Hospital & Distance.
+
+### 14. Feature N: Performance Benchmark (`docs/benchmark.md`)
+- **Partitioning vs Non-Partitioning Experiment**: Run identical Hive analytical queries on:
+  1. Partitioned table `aqi_readings` (partitioned by city and date)
+  2. Non-partitioned table `aqi_readings_unpartitioned`
+- **Metrics Captured**: Wall-clock execution time, HDFS bytes scanned, MapReduce splits, and CPU seconds.
+- **Documentation**: Write complete report in `docs/benchmark.md` for student lab records.
+
+### 15. Feature O: Admin Authentication
+- **Session-Based Protection**: Flask session login protecting `/admin`, `/alerts`, and `/status`.
+- **Credentials**: Managed via `.env` (`ADMIN_USERNAME`, `ADMIN_PASSWORD`, `SECRET_KEY`).
+- **UI Integration**: Clean login modal/page with logout capability.
+
+---
+
+## File Modification Plan
+
+```
+backend/
+├── app.py                     # [MODIFY] Add routes for features A-O, auth decorators, exports
+├── hive_client.py             # [MODIFY] Add lag-correlation, pollutant averages, anomaly helpers
+├── mongo_client.py            # [MODIFY] Add quality filter, alert history, pipeline runs
+├── advisories.py              # [MODIFY] Add vulnerable group & multilingual engine
+├── forecast_service.py        # [NEW] Next-24h AQI forecasting module
+├── anomaly_service.py         # [NEW] Z-score rolling anomaly detection module
+├── facilities_service.py      # [NEW] Proximity search for hospitals & schools
+└── tamilnadu_service.py       # [MODIFY] Integrate dominant pollutants & facility mappings
+
+config/
+├── advisories.json            # [NEW] Vulnerable groups & multilingual templates (EN/TA/HI)
+└── facilities.json            # [NEW] Registry of hospitals and schools with GPS coordinates
+
+frontend/
+├── templates/
+│   ├── index.html             # [MODIFY] Add language switcher, time slider, heatmap toggle, facility markers
+│   ├── check.html             # [NEW] "Check My Area" citizen lookup portal
+│   ├── status.html            # [NEW] Pipeline status & health page
+│   ├── alerts.html            # [NEW] Alert history log page
+│   └── login.html             # [NEW] Admin login page
+└── static/
+    ├── js/dashboard.js        # [MODIFY] Implement heatmap, time-slider, facilities, language switcher
+    └── css/styles.css         # [MODIFY] Styling for new components, tabs, and modals
+
+hive/
+├── correlation.hql            # [NEW] Hive job for lag-correlation analysis
+└── benchmark.hql              # [NEW] Partitioned vs non-partitioned benchmark queries
+
+docs/
+├── benchmark.md               # [NEW] Formal lab benchmark report
+└── forecast.md                # [NEW] Forecasting model methodology & limitations
+
+tests/
+└── test_api.py                # [MODIFY] Add assertions for all new API endpoints
+```
+
+---
+
+## Verification Plan
+
+### Automated Tests
+```bash
+# Run complete pytest test suite covering all services and API endpoints
+~/air-quality-ews/venv/bin/pytest -v ~/air-quality-ews/tests
+```
+
+### Manual & Endpoint Verification
+1. `GET /api/zones/CBE_ZN_01/pollutants` — Verify PM2.5 dominant pollutant in Coimbatore outbreak.
+2. `GET /api/advisory?zone=CBE_ZN_01&group=children&lang=ta` — Verify Tamil language pediatric advisory.
+3. `GET /api/anomalies` — Verify spike detection with $z > 2.5$.
+4. `GET /api/correlation` — Verify lag correlation scores at lags 0, 1, 2, 3.
+5. `GET /api/forecast/CBE_ZN_01` — Verify 24-hour hourly predicted AQI curve.
+6. `GET /api/facilities/nearby?zone=CBE_ZN_01` — Verify hospitals & schools within 3 km.
+7. `GET /api/export/ranking.csv` — Verify valid CSV export with headers.
+8. `GET /status`, `GET /alerts`, `GET /check`, `GET /login` — Verify all newly deployed web pages.

@@ -1,0 +1,240 @@
+{
+  "languages": ["en", "ta", "hi"],
+  "demographic_groups": [
+    "general_public",
+    "children",
+    "elderly",
+    "asthma_cardiac",
+    "pregnant_women",
+    "outdoor_workers"
+  ],
+  "dominant_pollutant_notices": {
+    "pm25": {
+      "en": "PM2.5 (Fine Respirable Particulates) is the primary concern today. Penetrates deep into alveolar lung tissues.",
+      "ta": "இன்றைய முதன்மையான அச்சுறுத்தல் PM2.5 (நுண் துகள்கள்) ஆகும். இது நுரையீரலின் ஆழமான திசுக்களுக்குள் ஊடுருவக்கூடியது.",
+      "hi": "आज मुख्य चिंता PM2.5 (सूक्ष्म कण) है। यह फेफड़ों के ऊतकों में गहराई तक प्रवेश करता है।"
+    },
+    "pm10": {
+      "en": "PM10 (Coarse Inhalable Dust) is elevated today. Causes immediate upper airway and nasal irritation.",
+      "ta": "இன்று PM10 (சுவாசிக்கக்கூடிய தூசி) அதிகமாக உள்ளது. இது மூக்கு மற்றும் சுவாசப்பாதையில் எரிச்சலை ஏற்படுத்துகிறது.",
+      "hi": "आज PM10 (धूल के कण) बढ़ा हुआ है। इससे सांस की नली और गले में जलन होती है।"
+    },
+    "no2": {
+      "en": "Nitrogen Dioxide (NO2) from vehicular combustion is dominant. Sharp bronchial airway constriction risk.",
+      "ta": "வாகனப் புகையிலிருந்து வரும் நைட்ரஜன் டை ஆக்சைடு (NO2) ஆதிக்கம் செலுத்துகிறது. மூச்சுக்குழாய் சுருங்கும் அபாயம்.",
+      "hi": "वाहनों से निकलने वाली नाइट्रोजन डाइऑक्साइड (NO2) प्रमुख है। सांस की नली में रुकावट का खतरा है।"
+    },
+    "so2": {
+      "en": "Sulfur Dioxide (SO2) industrial emissions detected. Severe threat for asthmatics.",
+      "ta": "தொழிற்சாலை புகையிலிருந்து சல்பர் டை ஆக்சைடு (SO2) கண்டறியப்பட்டுள்ளது. ஆஸ்துமா நோயாளிகளுக்கு கடுமையான ஆபத்து.",
+      "hi": "सल्फर डाइऑक्साइड (SO2) का स्तर अधिक है। अस्थमा के मरीजों के लिए गंभीर खतरा।"
+    },
+    "co": {
+      "en": "Carbon Monoxide (CO) levels elevated in stagnant traffic corridors. Reduces oxygen delivery to blood.",
+      "ta": "கார்பன் மோனாக்சைடு (CO) அளவு அதிகமாக உள்ளது. இரத்தத்தில் ஆக்ஸிஜன் அளவைக் குறைக்கும்.",
+      "hi": "कार्बन मोनोऑक्साइड (CO) का स्तर बढ़ा हुआ है। यह रक्त में ऑक्सीजन के स्तर को कम करता है।"
+    },
+    "o3": {
+      "en": "Ground-Level Ozone (O3) photochemical smog detected. Triggers acute coughing and reduced lung function.",
+      "ta": "தரைமட்ட ஓசோன் (O3) கண்டறியப்பட்டுள்ளது. தீவிர இருமல் மற்றும் நுரையீரல் பாதிப்பை தூண்டும்.",
+      "hi": "सतही ओजोन (O3) का स्तर बढ़ा हुआ है। इससे खांसी और फेफड़ों की कार्यक्षमता में कमी आती है।"
+    }
+  },
+  "tiers": {
+    "GREEN": {
+      "headline": {
+        "en": "Satisfactory Air Quality - Normal Activities Permitted",
+        "ta": "திருப்திகரமான காற்றின் தரம் - இயல்பான வெளிப்புற நடவடிக்கைகள் அனுமதிக்கப்படுகின்றன",
+        "hi": "संतोषजनक वायु गुणवत्ता - सामान्य बाहरी गतिविधियाँ की जा सकती हैं"
+      },
+      "groups": {
+        "general_public": {
+          "en": "Air quality is good. Negligible health risk. Ideal conditions for outdoor workouts and ventilation.",
+          "ta": "காற்றின் தரம் நன்று. சுகாதார ஆபத்து இல்லை. உடற்பயிற்சி மற்றும் வெளிப்புற வேலைகளுக்கு உகந்தது.",
+          "hi": "हवा साफ है। कोई स्वास्थ्य जोखिम नहीं है। व्यायाम और बाहरी गतिविधियों के लिए अनुकूल समय।"
+        },
+        "children": {
+          "en": "Safe for regular outdoor school sports and playground activities.",
+          "ta": "பள்ளி விளையாட்டு மைதானங்களில் குழந்தைகள் தாராளமாக விளையாடலாம்.",
+          "hi": "बच्चों के लिए बाहर खेलने और स्कूल की खेल गतिविधियों के लिए सुरक्षित है।"
+        },
+        "elderly": {
+          "en": "Safe for morning walks and garden recreation.",
+          "ta": "முதியவர்கள் காலை நடைப்பயிற்சி மற்றும் வெளிப்புறப் பொழுதுபோக்கில் பாதுகாப்பாக ஈடுபடலாம்.",
+          "hi": "बुजुर्गों के लिए सुबह की सैर और बाहर टहलने के लिए पूरी तरह सुरक्षित है।"
+        },
+        "asthma_cardiac": {
+          "en": "Atmospheric conditions pose minimal trigger risk. Maintain regular baseline inhalers.",
+          "ta": "சுவாச மற்றும் இதய நோயாளிகளுக்கு மிகக் குறைந்த ஆபத்து. வழக்கமான மருந்துகளை தொடரவும்.",
+          "hi": "अस्थमा और हृदय रोगियों के लिए जोखिम न्यूनतम है। नियमित दवाएं जारी रखें।"
+        },
+        "pregnant_women": {
+          "en": "Ambient air is clear. Safe for daily outdoor errands.",
+          "ta": "சுற்றுப்புற காற்று தூய்மையாக உள்ளது. கர்ப்பிணிப் பெண்களுக்கு பாதுகாப்பானது.",
+          "hi": "हवा सुरक्षित है। गर्भवती महिलाओं के लिए बाहर जाना पूरी तरह सुरक्षित है।"
+        },
+        "outdoor_workers": {
+          "en": "Normal shift schedules without respiratory protection required.",
+          "ta": "வெளிப்புற தொழிலாளர்களுக்கு சிறப்பு பாதுகாப்பு முகக்கவசம் தேவையில்லை.",
+          "hi": "बाहरी श्रमिकों के लिए सामान्य कार्य परिस्थितियां।"
+        }
+      }
+    },
+    "YELLOW": {
+      "headline": {
+        "en": "Moderate Environmental Risk - Sensitive Groups Exercise Caution",
+        "ta": "மிதமான சுற்றுச்சூழல் ஆபத்து - உணர்திறன் கொண்டவர்கள் எச்சரிக்கையுடன் இருக்கவும்",
+        "hi": "मध्यम पर्यावरणीय जोखिम - संवेदनशील वर्ग सावधानी बरतें"
+      },
+      "groups": {
+        "general_public": {
+          "en": "Acceptable air quality for healthy adults. Consider moderating prolonged heavy exertion if throat dryness develops.",
+          "ta": "ஆரோக்கியமான பெரியவர்களுக்கு ஏற்றுக்கொள்ளக்கூடிய காற்றின் தரம். தொண்டை வறட்சி ஏற்பட்டால் நீண்ட உடற்பயிற்சியை குறைக்கவும்.",
+          "hi": "सामान्य वयस्कों के लिए हवा ठीक है। गले में खराश होने पर भारी व्यायाम कम करें।"
+        },
+        "children": {
+          "en": "Limit intense aerobic drills exceeding 90 continuous minutes during peak afternoon stagnation.",
+          "ta": "பிற்பகல் நேரங்களில் குழந்தைகள் தீவிர விளையாட்டுப் பயிற்சிகளை 90 நிமிடங்களுக்கு மேல் செய்ய வேண்டாம்.",
+          "hi": "दोपहर के समय बच्चों को लगातार 90 मिनट से अधिक भारी खेल से बचाएं।"
+        },
+        "elderly": {
+          "en": "Senior citizens should avoid brisk walking along dense vehicle corridors.",
+          "ta": "முதியவர்கள் வாகன நெரிசல் மிகுந்த சாலைகளில் நடைப்பயிற்சி செய்வதைத் தவிர்க்கவும்.",
+          "hi": "बुजुर्ग व्यस्त सड़कों के किनारे सुबह की सैर करने से बचें।"
+        },
+        "asthma_cardiac": {
+          "en": "Keep rescue bronchodilators accessible. Wear surgical/cloth mask near heavy construction.",
+          "ta": "ஆஸ்துமா இன்ஹேலரை எப்போதும் உடன் வைத்திருக்கவும். தூசி மிகுந்த இடங்களில் முகக்கவசம் அணியவும்.",
+          "hi": "इनहेलर हमेशा साथ रखें। धूल वाले इलाकों में मास्क का प्रयोग करें।"
+        },
+        "pregnant_women": {
+          "en": "Maintain good indoor hydration; avoid idling vehicle junctions.",
+          "ta": "நிறைய தண்ணீர் குடிக்கவும்; வாகனப் புகை சூழ்ந்த இடங்களைத் தவிர்க்கவும்.",
+          "hi": "भरपूर पानी पिएं और ट्रैफिक जाम वाले इलाकों में ज्यादा देर रुकने से बचें।"
+        },
+        "outdoor_workers": {
+          "en": "Take hydration breaks; wash face and eyes periodically to remove dust.",
+          "ta": "இடைவேளையில் முகத்தையும் கண்களையும் நீரினால் கழுவி தூசியை அகற்றவும்.",
+          "hi": "नियमित अंतराल पर पानी पिएं और चेहरे तथा आंखों को ठंडे पानी से धोएं।"
+        }
+      }
+    },
+    "ORANGE": {
+      "headline": {
+        "en": "High Health Risk - Unhealthy for Vulnerable Demographics",
+        "ta": "அதிக சுகாதார ஆபத்து - உணர்திறன் கொண்டவர்களுக்கு ஆரோக்கியமற்றது",
+        "hi": "उच्च स्वास्थ्य जोखिम - संवेदनशील वर्गों के लिए अस्वस्थ"
+      },
+      "groups": {
+        "general_public": {
+          "en": "Air pollution is elevated. Wear N95/FFP2 masks outdoors. Close residential windows during peak traffic.",
+          "ta": "காற்று மாசுபாடு அதிகரித்துள்ளது. வெளியே செல்லும் போது N95 முகக்கவசம் அணியவும். ஜன்னல்களை மூடவும்.",
+          "hi": "वायु प्रदूषण बढ़ा हुआ है। बाहर निकलते समय N95 मास्क पहनें और खिड़कियां बंद रखें।"
+        },
+        "children": {
+          "en": "Suspend strenuous outdoor sports and physical training in schools. Conduct indoor activities.",
+          "ta": "பள்ளிகளில் வெளிப்புற விளையாட்டு பயிற்சிகளை தற்காலிகமாக நிறுத்தி, உள்ளரங்க செயல்பாடுகளை நடத்தவும்.",
+          "hi": "स्कूलों में बाहरी खेल गतिविधियां निलंबित करें। कक्षा के अंदर ही गतिविधियां कराएं।"
+        },
+        "elderly": {
+          "en": "Remain indoors with air filtration. Avoid early morning exposure during atmospheric inversion.",
+          "ta": "முதியவர்கள் வீட்டுக்குள்ளேயே இருக்கவும். அதிகாலை குளிர் மற்றும் பனிப்புகை நேரத்தில் வெளியே செல்ல வேண்டாம்.",
+          "hi": "बुजुर्ग घर के अंदर रहें। सुबह के कोहरे और धुएं के समय बाहर न निकलें।"
+        },
+        "asthma_cardiac": {
+          "en": "High clinical trigger probability. Pre-dose prophylactic inhalers as directed by physician. Strictly avoid outdoor exertion.",
+          "ta": "ஆஸ்துமா பாதிப்பு ஏற்படும் அபாயம் அதிகம். மருத்துவ ஆலோசனைப்படி இன்ஹேலர் பயன்படுத்தவும். வெளியே செல்ல வேண்டாம்.",
+          "hi": "अस्थमा अटैक का खतरा अधिक है। डॉक्टर की सलाह अनुसार इनहेलर लें और बाहर जाने से बचें।"
+        },
+        "pregnant_women": {
+          "en": "Avoid outdoor walks. Keep living spaces closed and well-ventilated with HEPA filters where available.",
+          "ta": "வெளியே செல்வதைத் தவிர்க்கவும். முடிந்தவரை காற்று சுத்திகரிப்பான் உள்ள அறைகளில் இருக்கவும்.",
+          "hi": "बाहरी सैर से बचें। घर के अंदर स्वच्छ वायु बनाए रखें।"
+        },
+        "outdoor_workers": {
+          "en": "Mandatory N95 masking. Employers must provide particulate filtration respirators and 15-minute indoor rest cycles.",
+          "ta": "வெளிப்புற தொழிலாளர்களுக்கு N95 முகக்கவசம் கட்டாயம். வேலை செய்யும் போது குறிப்பிட்ட இடைவேளைகளில் ஓய்வு எடுக்கவும்.",
+          "hi": "बाहरी श्रमिकों के लिए N95 मास्क अनिवार्य है। काम के बीच में आराम के लिए व्यवस्था करें।"
+        }
+      }
+    },
+    "RED": {
+      "headline": {
+        "en": "Severe Health Hazard - Emergency Population Alert",
+        "ta": "கடுமையான சுகாதார ஆபத்து - அவசர பொது எச்சரிக்கை",
+        "hi": "गंभीर स्वास्थ्य आपातकाल - सार्वजनिक स्वास्थ्य चेतावनी"
+      },
+      "groups": {
+        "general_public": {
+          "en": "Hazardous conditions. Serious threat of acute bronchitis and systemic inflammation. Avoid all outdoor activity. Tight N95/N99 masks mandatory outdoors.",
+          "ta": "ஆபத்தான காற்றின் தரம்! மூச்சுக்குழாய் அழற்சி ஆபத்து. அனைத்து வெளிப்புற நடவடிக்கைகளையும் தவிர்க்கவும். N95/N99 முகக்கவசம் கட்டாயம்.",
+          "hi": "अत्यंत खतरनाक वायु गुणवत्ता। सभी बाहरी गतिविधियां तुरंत रोकें। बाहर निकलने पर N95/N99 मास्क अनिवार्य है।"
+        },
+        "children": {
+          "en": "Close school playgrounds. Mandate indoor classroom air filtration. Pediatric wards on acute asthma alert.",
+          "ta": "பள்ளி மைதானங்களை மூடவும். குழந்தைகளை வெளியே விட வேண்டாம். மருத்துவமனைகளில் அவசர சிகிச்சை பிரிவு உஷார்.",
+          "hi": "बच्चों को पूरी तरह घर के अंदर रखें। स्कूलों में बाहरी गतिविधियां पूर्णतः बंद की जाएं।"
+        },
+        "elderly": {
+          "en": "Strict indoor confinement. Monitor oxygen saturation (SpO2) twice daily. Seek immediate emergency consultation if chest tightness develops.",
+          "ta": "முதியவர்கள் முழுமையாக வீட்டிற்குள்ளேயே இருக்க வேண்டும். மூச்சுத்திணறல் அல்லது நெஞ்சுவலி ஏற்பட்டால் உடனடியாக மருத்துவமனை செல்லவும்.",
+          "hi": "बुजुर्ग पूरी तरह घर में रहें। सीने में दर्द या भारीपन होने पर तुरंत अस्पताल से संपर्क करें।"
+        },
+        "asthma_cardiac": {
+          "en": "CRITICAL RISK: High probability of acute bronchospasm and cardiovascular distress. Prepare nebulizers and emergency transport.",
+          "ta": "அவசர ஆபத்து: தீவிர மூச்சுத்திணறல் ஏற்படலாம். நெபுலைசர் மற்றும் அவசர சிகிச்சைக்கான ஏற்பாடுகளை தயார் நிலையில் வைக்கவும்.",
+          "hi": "अत्यधिक जोखिम: गंभीर सांस की तकलीफ हो सकती है। नेबुलाइज़र और आपातकालीन दवाएं तैयार रखें।"
+        },
+        "pregnant_women": {
+          "en": "Avoid any ambient exposure to fine soot. Use certified indoor air purifiers.",
+          "ta": "நச்சுப் புகையில் ஒருபோதும் வெளிப்பட வேண்டாம். உட்புற காற்று சுத்திகரிப்பான் பயன்படுத்தவும்.",
+          "hi": "प्रदूषित हवा के संपर्क में बिल्कुल न आएं। घर के अंदर ही रहें।"
+        },
+        "outdoor_workers": {
+          "en": "Halt all non-emergency outdoor manual labor, road construction, and stone crushing.",
+          "ta": "அனைத்து அவசரமற்ற வெளிப்புற கட்டுமான வேலைகளையும் தற்காலிகமாக நிறுத்த வேண்டும்.",
+          "hi": "सभी गैर-जरूरी बाहरी निर्माण और भारी शारीरिक कार्य तुरंत रोके जाएं।"
+        }
+      }
+    },
+    "COMPOUND_ALERT": {
+      "headline": {
+        "en": "CRITICAL COMPOUND PUBLIC HEALTH EMERGENCY - Synergistic Outbreak",
+        "ta": "தீவிர கூட்டு சுகாதார அவசரநிலை - தீவிர நோய்ப்பரவல் எச்சரிக்கை",
+        "hi": "अति-गंभीर संयुक्त स्वास्थ्य आपातकाल - बीमारी का तेजी से प्रसार"
+      },
+      "groups": {
+        "general_public": {
+          "en": "Active convergence of hazardous pollution and surging community respiratory illness. Primary health centers operating on emergency surge triage.",
+          "ta": "அபாயகரமான காற்று மாசுபாடும், பொதுமக்களின் தீவிர சுவாச நோய்களும் ஒரே நேரத்தில் இணைந்துள்ளன. அரசு ஆரம்ப சுகாதார நிலையங்கள் அவசர சிகிச்சைக்கு தயார்.",
+          "hi": "गंभीर वायु प्रदूषण और सांस की बीमारियों का खतरनाक संगम। प्राथमिक स्वास्थ्य केंद्रों में आपातकालीन सेवाएं सक्रिय की गई हैं।"
+        },
+        "children": {
+          "en": "Complete suspension of physical attendance for primary schools. Immediate pediatric respiratory surveillance.",
+          "ta": "தொடக்கப் பள்ளிகளுக்கு நேரடி வகுப்புகளை ரத்து செய்து ஆன்லைன் வகுப்புகளை பரிசீலிக்கவும். குழந்தைகள் மருத்துவ சிகிச்சை தயாராக உள்ளது.",
+          "hi": "बच्चों के लिए स्कूलों में अवकाश या ऑनलाइन कक्षाएं सुनिश्चित करें। बाल चिकित्सा विभाग अलर्ट पर।"
+        },
+        "elderly": {
+          "en": "Municipal health workers on door-to-door welfare checks. Oxygen concentrator units deployed to local health sub-centers.",
+          "ta": "சுகாதாரப் பணியாளர்கள் முதியவர்களை நேரடியாகக் கண்காணிப்பர். உள்ளூர் மையங்களில் ஆக்ஸிஜன் செறிவூட்டிகள் தயார்.",
+          "hi": "स्वास्थ्य कार्यकर्ता बुजुर्गों की निगरानी करेंगे। स्थानीय केंद्रों में ऑक्सीजन की व्यवस्था की गई है।"
+        },
+        "asthma_cardiac": {
+          "en": "Immediate hospital alert. Dial 108 emergency services at first sign of cyanosis, stridor, or refractory wheeze.",
+          "ta": "மூச்சுத்திணறல் அல்லது உதடுகள் நீல நிறமாக மாறினால் உடனடியாக 108 அவசர ஊர்தியை அழைக்கவும்.",
+          "hi": "सांस लेने में भारी कठिनाई होने पर तुरंत 108 आपातकालीन एम्बुलेंस सेवा को फोन करें।"
+        },
+        "pregnant_women": {
+          "en": "Complete protection from environmental particulate exposure. Contact maternal health officer if persistent coughing occurs.",
+          "ta": "சுற்றுச்சூழல் புகையிலிருந்து முழுமையான பாதுகாப்பு தேவை. தொடர்ந்து இருமல் இருந்தால் மகப்பேறு மருத்துவரை அணுகவும்.",
+          "hi": "प्रदूषण से शत-प्रतिशत बचाव आवश्यक है। खांसी न रुकने पर डॉक्टर से परामर्श लें।"
+        },
+        "outdoor_workers": {
+          "en": "Mandatory administrative cessation of all outdoor physical labor. Enforce paid heat/smog recess.",
+          "ta": "வெளிப்புற தொழிலாளர்களுக்கு வேலை நிறுத்தம் செய்யப்பட்டு ஊதியத்துடன் கூடிய அவசர விடுப்பு அளிக்கப்பட வேண்டும்.",
+          "hi": "बाहरी कार्य पूर्णतः प्रतिबंधित। श्रमिकों के स्वास्थ्य की सुरक्षा प्राथमिकता।"
+        }
+      }
+    }
+  }
+}

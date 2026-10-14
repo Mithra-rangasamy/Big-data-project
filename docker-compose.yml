@@ -1,0 +1,83 @@
+version: "3.8"
+
+services:
+  hadoop-namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: ews-hadoop-namenode
+    environment:
+      - CLUSTER_NAME=ews-bigdata-cluster
+      - CORE_CONF_fs_defaultFS=hdfs://hadoop-namenode:9000
+      - HDFS_CONF_dfs_replication=1
+    ports:
+      - "9870:9870"
+      - "9000:9000"
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+    networks:
+      - ews-net
+
+  hadoop-datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: ews-hadoop-datanode
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://hadoop-namenode:9000
+    depends_on:
+      - hadoop-namenode
+    volumes:
+      - hadoop_datanode:/hadoop/dfs/data
+    networks:
+      - ews-net
+
+  mongodb:
+    image: mongo:8.0
+    container_name: ews-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - ews-net
+
+  hive-server:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: ews-hiveserver2
+    environment:
+      - HIVE_CORE_CONF_javax_jdo_option_ConnectionURL=jdbc:postgresql://hive-metastore-postgresql:5432/metastore
+      - SERVICE_PRECONDITION=hive-metastore-postgresql:5432
+    ports:
+      - "10000:10000"
+      - "10002:10002"
+    depends_on:
+      - hadoop-namenode
+      - hadoop-datanode
+    networks:
+      - ews-net
+
+  dashboard-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ews-dashboard
+    restart: always
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/
+      - HIVE_HOST=hive-server
+      - HIVE_PORT=10000
+      - HDFS_URI=hdfs://hadoop-namenode:9000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+      - hive-server
+    networks:
+      - ews-net
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode:
+  mongo_data:
+
+networks:
+  ews-net:
+    driver: bridge

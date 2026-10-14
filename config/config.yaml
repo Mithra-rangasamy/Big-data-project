@@ -1,0 +1,101 @@
+# CIT 21MDS56: Air Quality & Public Health Early-Warning System
+# config/config.yaml - Central System Configuration
+
+app:
+  name: "Multi-City Air Quality & Public Health Early-Warning System"
+  course: "21MDS56 Big Data Computing Laboratory"
+  institution: "Coimbatore Institute of Technology"
+  version: "2.0.0"
+  host: "0.0.0.0"
+  port: 5000
+  debug: false
+  secret_key: "cit-bigdata-21mds56-secret-key-2026"
+
+dataset:
+  kaggle_dataset_url: "https://www.kaggle.com/datasets/rohanrao/air-quality-data-in-india"
+  raw_dir: "data/raw"
+  synthetic_dir: "data/synthetic"
+  sample_dir: "data/sample"
+  demo_cities:
+    - "Coimbatore"
+    - "Chennai"
+    - "Bengaluru"
+    - "Delhi"
+    - "Mumbai"
+  demo_window_days: 30
+  pollutants:
+    - "PM2.5"
+    - "PM10"
+    - "NO2"
+    - "SO2"
+    - "CO"
+    - "O3"
+  aqi_max_scale: 500.0
+
+risk_formula:
+  weights:
+    w_aqi: 0.50
+    w_complaint: 0.35
+    w_trend: 0.15
+  tiers:
+    green:
+      min: 0.0
+      max: 24.99
+      label: "Low Risk"
+      color: "#10b981"
+    yellow:
+      min: 25.0
+      max: 49.99
+      label: "Moderate Alert"
+      color: "#f59e0b"
+    orange:
+      min: 50.0
+      max: 74.99
+      label: "High Advisory"
+      color: "#f97316"
+    red:
+      min: 75.0
+      max: 100.0
+      label: "Severe Emergency"
+      color: "#ef4444"
+  escalation:
+    enabled: true
+    rule: "If AQI is rising AND complaints are rising in the same zone, raise alert level by 1 step (capped at RED)"
+    aqi_norm_trigger: 0.50
+    complaint_density_trigger: 0.40
+
+hadoop:
+  hdfs_uri: "hdfs://localhost:9000"
+  raw_landing_zone: "/data/raw"
+  processed_landing_zone: "/data/processed"
+  partitions:
+    aqi: "/data/raw/aqi/city={city}/date={date}"
+    weather: "/data/raw/weather/city={city}/date={date}"
+    complaints: "/data/raw/complaints/city={city}/date={date}"
+
+hive:
+  host: "localhost"
+  port: 10000
+  database: "air_quality_ews"
+  table_aqi: "aqi_readings"
+  table_weather: "weather_data"
+  table_risk: "zone_risk_score"
+
+mongodb:
+  uri: "mongodb://localhost:27017/"
+  database: "air_quality_ews"
+  collections:
+    symptom_reports: "symptom_reports"
+    social_posts: "social_posts"
+    rejected_reports: "rejected_reports"
+    pipeline_runs: "pipeline_runs"
+    alert_history: "alert_history"
+
+synthetic_generator:
+  seed: 42
+  outbreak_zones:
+    - "CBE_ZN_01"
+    - "DEL_ZN_01"
+  decoy_zones:
+    - "BOM_ZN_01"
+    - "CHE_ZN_02"

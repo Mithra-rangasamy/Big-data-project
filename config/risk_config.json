@@ -1,0 +1,62 @@
+{
+  "formula_weights": {
+    "aqi_norm": 0.35,
+    "aqi_trend": 0.15,
+    "complaint_density": 0.30,
+    "symptom_severity": 0.15,
+    "weather_factor": 0.05
+  },
+  "aqi_max_scale": 500.0,
+  "thresholds": {
+    "green_max": 25.0,
+    "yellow_max": 50.0,
+    "orange_max": 75.0
+  },
+  "risk_levels": {
+    "GREEN": {
+      "label": "Low Risk / Clean Air",
+      "color": "#10b981",
+      "description": "Air quality and health reports within safe limits."
+    },
+    "YELLOW": {
+      "label": "Moderate Alert",
+      "color": "#f59e0b",
+      "description": "Moderate pollution detected; sensitive groups should take precautions."
+    },
+    "ORANGE": {
+      "label": "High Health Advisory",
+      "color": "#f97316",
+      "description": "High pollution combined with rising symptom reports. Outdoor activities restricted."
+    },
+    "RED": {
+      "label": "Severe Emergency",
+      "color": "#ef4444",
+      "description": "Hazardous pollution coinciding with acute respiratory complaints."
+    }
+  },
+  "escalation": {
+    "aqi_norm_threshold": 0.50,
+    "complaint_density_rising_delta": 0.10,
+    "compound_alert_tier_bump": 1
+  },
+  "symptom_weights": {
+    "breathing difficulty": 1.0,
+    "shortness of breath": 1.0,
+    "chest pain": 0.9,
+    "asthma": 0.85,
+    "wheezing": 0.8,
+    "eye irritation": 0.6,
+    "burning eyes": 0.6,
+    "cough": 0.5,
+    "throat irritation": 0.5,
+    "headache": 0.4,
+    "nausea": 0.4,
+    "smog": 0.3,
+    "haze": 0.3
+  },
+  "weather_stagnation": {
+    "wind_speed_stagnant_threshold_kmh": 5.0,
+    "stagnation_factor_bump": 1.0,
+    "normal_factor": 0.2
+  }
+}

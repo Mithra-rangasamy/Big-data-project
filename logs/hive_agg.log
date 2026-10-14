@@ -1,0 +1,120 @@
+Connecting to jdbc:hive2://localhost:10000
+Connected to: Apache Hive (version 4.0.1)
+Driver: Hive JDBC (version 4.0.1)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://localhost:10000> SET hive.query.results.cache.enabled=false;
+No rows affected (0.077 seconds)
+0: jdbc:hive2://localhost:10000> SET hive.auto.convert.join=false;
+No rows affected (0.006 seconds)
+0: jdbc:hive2://localhost:10000> SET hive.exec.mode.local.auto=false;
+No rows affected (0.004 seconds)
+0: jdbc:hive2://localhost:10000> SET hive.exec.compress.output=false;
+No rows affected (115.885 seconds)
+0: jdbc:hive2://localhost:10000> 
+0: jdbc:hive2://localhost:10000> INSERT OVERWRITE DIRECTORY 'hdfs://localhost:9000/data/processed/daily_aqi_agg'
+. . . . . . . . . . . . . . . .> ROW FORMAT DELIMITED
+. . . . . . . . . . . . . . . .> FIELDS TERMINATED BY '\t'
+. . . . . . . . . . . . . . . .> SELECT 
+. . . . . . . . . . . . . . . .>     a.zone_id,
+. . . . . . . . . . . . . . . .>     a.zone_name,
+. . . . . . . . . . . . . . . .>     a.city,
+. . . . . . . . . . . . . . . .>     a.`date`,
+. . . . . . . . . . . . . . . .>     ROUND(AVG(a.aqi), 2) AS avg_aqi,
+. . . . . . . . . . . . . . . .>     MAX(a.aqi) AS max_aqi,
+. . . . . . . . . . . . . . . .>     ROUND(AVG(COALESCE(w.wind_speed, 8.0)), 2) AS avg_wind_speed
+. . . . . . . . . . . . . . . .> FROM aqi_readings a
+. . . . . . . . . . . . . . . .> LEFT JOIN weather_data w
+. . . . . . . . . . . . . . . .>   ON a.zone_id = w.zone_id AND a.city = w.city AND a.`date` = w.`date` AND a.ts = w.ts
+. . . . . . . . . . . . . . . .> GROUP BY a.zone_id, a.zone_name, a.city, a.`date`;
+INFO  : Compiling command(queryId=mithra_20261014084111_e4864637-b803-4f6c-864a-465328913ce1): INSERT OVERWRITE DIRECTORY 'hdfs://localhost:9000/data/processed/daily_aqi_agg'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+SELECT
+a.zone_id,
+a.zone_name,
+a.city,
+a.`date`,
+ROUND(AVG(a.aqi), 2) AS avg_aqi,
+MAX(a.aqi) AS max_aqi,
+ROUND(AVG(COALESCE(w.wind_speed, 8.0)), 2) AS avg_wind_speed
+FROM aqi_readings a
+LEFT JOIN weather_data w
+ON a.zone_id = w.zone_id AND a.city = w.city AND a.`date` = w.`date` AND a.ts = w.ts
+GROUP BY a.zone_id, a.zone_name, a.city, a.`date`
+INFO  : No Stats for default@aqi_readings, Columns: zone_id, aqi, zone_name, ts
+INFO  : No Stats for default@weather_data, Columns: zone_id, wind_speed, ts
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:a.zone_id, type:string, comment:null), FieldSchema(name:a.zone_name, type:string, comment:null), FieldSchema(name:a.city, type:string, comment:null), FieldSchema(name:a.date, type:string, comment:null), FieldSchema(name:avg_aqi, type:double, comment:null), FieldSchema(name:max_aqi, type:int, comment:null), FieldSchema(name:avg_wind_speed, type:double, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=mithra_20261014084111_e4864637-b803-4f6c-864a-465328913ce1); Time taken: -114.787 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=mithra_20261014084111_e4864637-b803-4f6c-864a-465328913ce1): INSERT OVERWRITE DIRECTORY 'hdfs://localhost:9000/data/processed/daily_aqi_agg'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+SELECT
+a.zone_id,
+a.zone_name,
+a.city,
+a.`date`,
+ROUND(AVG(a.aqi), 2) AS avg_aqi,
+MAX(a.aqi) AS max_aqi,
+ROUND(AVG(COALESCE(w.wind_speed, 8.0)), 2) AS avg_wind_speed
+FROM aqi_readings a
+LEFT JOIN weather_data w
+ON a.zone_id = w.zone_id AND a.city = w.city AND a.`date` = w.`date` AND a.ts = w.ts
+GROUP BY a.zone_id, a.zone_name, a.city, a.`date`
+WARN  : Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. tez) or using Hive 1.X releases.
+INFO  : Query ID = mithra_20261014084111_e4864637-b803-4f6c-864a-465328913ce1
+INFO  : Total jobs = 2
+INFO  : Launching Job 1 out of 2
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks not specified. Estimated from input data size: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:2
+INFO  : Submitting tokens for job: job_1791855625879_0041
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0041/
+INFO  : Starting Job = job_1791855625879_0041, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0041/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0041
+INFO  : Hadoop job information for Stage-1: number of mappers: 2; number of reducers: 1
+INFO  : 2026-10-14 08:39:27,838 Stage-1 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:39:38,224 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 23.4 sec
+INFO  : 2026-10-14 08:41:36,213 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 23.4 sec
+INFO  : 2026-10-14 08:39:47,583 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 31.75 sec
+INFO  : MapReduce Total cumulative CPU time: 31 seconds 750 msec
+INFO  : Ended Job = job_1791855625879_0041
+INFO  : Launching Job 2 out of 2
+INFO  : Starting task [Stage-2:MAPRED] in serial mode
+INFO  : Number of reduce tasks not specified. Estimated from input data size: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1791855625879_0042
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0042/
+INFO  : Starting Job = job_1791855625879_0042, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0042/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0042
+INFO  : Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+INFO  : 2026-10-14 08:40:02,754 Stage-2 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:40:08,985 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 3.68 sec
+INFO  : 2026-10-14 08:40:18,236 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 10.75 sec
+INFO  : MapReduce Total cumulative CPU time: 10 seconds 750 msec
+INFO  : Ended Job = job_1791855625879_0042
+INFO  : Starting task [Stage-0:MOVE] in serial mode
+INFO  : Moving data to directory hdfs://localhost:9000/data/processed/daily_aqi_agg from hdfs://localhost:9000/data/processed/daily_aqi_agg/.hive-staging_hive_2026-10-14_08-41-11_263_4524833718004949350-6/-ext-10000
+INFO  : MapReduce Jobs Launched: 
+INFO  : Stage-Stage-1: Map: 2  Reduce: 1   Cumulative CPU: 31.75 sec   HDFS Read: 4011034 HDFS Write: 65839 HDFS EC Read: 0 SUCCESS
+INFO  : Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 10.75 sec   HDFS Read: 79834 HDFS Write: 51333 HDFS EC Read: 0 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 42 seconds 500 msec
+INFO  : Completed executing command(queryId=mithra_20261014084111_e4864637-b803-4f6c-864a-465328913ce1); Time taken: 62.829 seconds
+No rows affected (-51.943 seconds)
+0: jdbc:hive2://localhost:10000> 
+0: jdbc:hive2://localhost:10000> Closing: 0: jdbc:hive2://localhost:10000

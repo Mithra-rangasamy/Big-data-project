@@ -1,0 +1,228 @@
+[
+  {
+    "report_id": "REP_e6507c76f0",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-15 18:28:12",
+    "date": "2026-09-15",
+    "symptoms": [
+      "throat irritation",
+      "skin irritation",
+      "breathing difficulty"
+    ],
+    "severity": 2,
+    "free_text": "Scratchy and painful throat. The air smells acrid and full of particulate dust.",
+    "age_group": "adult",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_a863b4a4ee",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-18 06:28:12",
+    "date": "2026-09-18",
+    "symptoms": [
+      "eye irritation",
+      "headache",
+      "cough"
+    ],
+    "severity": 3,
+    "free_text": "Severe eye stinging and burning sensation after walking to the metro station.",
+    "age_group": "children",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_4bfca7b898",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-18 23:28:12",
+    "date": "2026-09-18",
+    "symptoms": [
+      "headache",
+      "eye irritation"
+    ],
+    "severity": 2,
+    "free_text": "Throbbing headache and dizziness from the dense traffic haze.",
+    "age_group": "children",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_74119f051a",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-19 01:28:12",
+    "date": "2026-09-19",
+    "symptoms": [
+      "skin irritation",
+      "chest tightness",
+      "eye irritation"
+    ],
+    "severity": 1,
+    "free_text": "Itchy skin rashes and facial irritation after exposure to industrial fumes.",
+    "age_group": "young_adult",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_9ba981eee6",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-19 02:28:12",
+    "date": "2026-09-19",
+    "symptoms": [
+      "chest tightness",
+      "breathing difficulty",
+      "skin irritation"
+    ],
+    "severity": 3,
+    "free_text": "Heavy pressure on my chest and shallow breathing. Cannot stay outside.",
+    "age_group": "young_adult",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_bfe41d1d09",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-20 09:28:12",
+    "date": "2026-09-20",
+    "symptoms": [
+      "cough",
+      "skin irritation"
+    ],
+    "severity": 3,
+    "free_text": "Persistent hacking cough since morning. Throat feels like sandpaper.",
+    "age_group": "elderly",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_3af793f71a",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-20 13:28:12",
+    "date": "2026-09-20",
+    "symptoms": [
+      "eye irritation"
+    ],
+    "severity": 1,
+    "free_text": "Severe eye stinging and burning sensation after walking to the metro station.",
+    "age_group": "children",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_3ab1571c06",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-21 04:28:12",
+    "date": "2026-09-21",
+    "symptoms": [
+      "headache",
+      "eye irritation",
+      "throat irritation"
+    ],
+    "severity": 3,
+    "free_text": "Throbbing headache and dizziness from the dense traffic haze.",
+    "age_group": "young_adult",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_82ad94187b",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-21 10:28:12",
+    "date": "2026-09-21",
+    "symptoms": [
+      "chest tightness"
+    ],
+    "severity": 3,
+    "free_text": "Heavy pressure on my chest and shallow breathing. Cannot stay outside.",
+    "age_group": "adult",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_3959a49139",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-22 03:28:12",
+    "date": "2026-09-22",
+    "symptoms": [
+      "headache"
+    ],
+    "severity": 1,
+    "free_text": "Throbbing headache and dizziness from the dense traffic haze.",
+    "age_group": "adult",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_ec9eb9efe7",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-23 07:28:12",
+    "date": "2026-09-23",
+    "symptoms": [
+      "throat irritation",
+      "headache",
+      "breathing difficulty"
+    ],
+    "severity": 1,
+    "free_text": "Scratchy and painful throat. The air smells acrid and full of particulate dust.",
+    "age_group": "young_adult",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_1490478d8a",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-23 11:28:12",
+    "date": "2026-09-23",
+    "symptoms": [
+      "chest tightness",
+      "skin irritation"
+    ],
+    "severity": 2,
+    "free_text": "Heavy pressure on my chest and shallow breathing. Cannot stay outside.",
+    "age_group": "adult",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_58124a6536",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-23 23:28:12",
+    "date": "2026-09-23",
+    "symptoms": [
+      "breathing difficulty"
+    ],
+    "severity": 1,
+    "free_text": "Extremely difficult to catch my breath outdoors today. The smog is choking.",
+    "age_group": "elderly",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_a51ad343dc",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-24 12:28:12",
+    "date": "2026-09-24",
+    "symptoms": [
+      "throat irritation",
+      "eye irritation"
+    ],
+    "severity": 2,
+    "free_text": "Scratchy and painful throat. The air smells acrid and full of particulate dust.",
+    "age_group": "children",
+    "source": "synthetic"
+  },
+  {
+    "report_id": "REP_c9d4b8b6d1",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-25 08:28:12",
+    "date": "2026-09-25",
+    "symptoms": [
+      "skin irritation"
+    ],
+    "severity": 3,
+    "free_text": "Itchy skin rashes and facial irritation after exposure to industrial fumes.",
+    "age_group": "young_adult",
+    "source": "synthetic"
+  }
+]

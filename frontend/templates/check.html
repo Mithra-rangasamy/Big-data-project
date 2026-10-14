@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check My Area | Public Health Early Warning Portal</title>
+    <link rel="stylesheet" href="/static/css/styles.css?v=2.2">
+    <style>
+        .check-container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background: #1e293b;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .result-card {
+            background: #0f172a;
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid #334155;
+            display: none;
+        }
+        .risk-badge-large {
+            display: inline-block;
+            font-size: 1.25rem;
+            font-weight: 800;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .hospital-card {
+            margin-top: 1.25rem;
+            background: rgba(14, 165, 233, 0.08);
+            border-left: 4px solid #0284c7;
+            padding: 1rem;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body style="background: #0b1120; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif;">
+
+    <!-- Navigation Header -->
+    <header class="navbar" style="border-bottom: 1px solid #1e293b; padding: 0.75rem 2rem;">
+        <div class="brand">
+            <span class="brand-icon">🛡️</span>
+            <div>
+                <a href="/" style="color:inherit; text-decoration:none;" class="brand-title">Early-Warning System Dashboard</a>
+                <div class="brand-subtitle">Citizen Public Health Assessment Portal (Feature M)</div>
+            </div>
+        </div>
+        <div class="nav-actions">
+            <a href="/" class="btn btn-secondary">📊 Main Dashboard</a>
+            <a href="/alerts" class="btn btn-secondary">🚨 Active Alerts</a>
+            <a href="/status" class="btn btn-secondary">⚙️ Pipeline Health</a>
+        </div>
+    </header>
+
+    <main class="check-container">
+        <div class="header-bar">
+            <div>
+                <h1 style="font-size: 1.6rem; font-weight: 700; margin: 0; color: #38bdf8;">📍 Check My Area Air Quality & Health Risk</h1>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin: 0.25rem 0 0 0;">Personalized multi-lingual guidance and hospital emergency locator.</p>
+            </div>
+            <!-- Language Switcher -->
+            <div style="display:flex; gap: 0.5rem;">
+                <button class="btn btn-secondary lang-btn active" data-lang="en">English</button>
+                <button class="btn btn-secondary lang-btn" data-lang="ta">தமிழ்</button>
+                <button class="btn btn-secondary lang-btn" data-lang="hi">हिंदी</button>
+            </div>
+        </div>
+
+        <!-- Selection Controls -->
+        <div class="selector-grid">
+            <div>
+                <label style="display:block; font-size:0.85rem; color:#94a3b8; margin-bottom:0.35rem; font-weight:600;">1. Select Locality / Zone</label>
+                <select id="zone-select" class="form-control" style="width:100%; background:#0f172a; color:#fff; border:1px solid #334155; padding:0.6rem; border-radius:6px;">
+                    <option value="">Loading monitored zones...</option>
+                </select>
+            </div>
+            <div>
+                <label style="display:block; font-size:0.85rem; color:#94a3b8; margin-bottom:0.35rem; font-weight:600;">2. Demographic / Vulnerability Group</label>
+                <select id="group-select" class="form-control" style="width:100%; background:#0f172a; color:#fff; border:1px solid #334155; padding:0.6rem; border-radius:6px;">
+                    <option value="general_public">General Public</option>
+                    <option value="children">Children &amp; Infants (&lt; 12)</option>
+                    <option value="elderly">Senior Citizens (65+)</option>
+                    <option value="asthma_cardiac">Asthma / Heart Patients</option>
+                    <option value="pregnant_women">Pregnant Women</option>
+                    <option value="outdoor_workers">Outdoor Workers &amp; Laborers</option>
+                </select>
+            </div>
+        </div>
+
+        <button id="btn-check-area" class="btn btn-danger" style="width:100%; padding:0.75rem; font-size:1rem; font-weight:700; justify-content:center; margin-bottom:1.5rem;">
+            🔍 Check Air Quality &amp; Public Health Status
+        </button>
+
+        <!-- Live Result Panel -->
+        <div id="result-box" class="result-card">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem;">
+                <div>
+                    <h2 id="res-zone-name" style="margin:0; font-size:1.4rem; color:#f8fafc;">Zone Name</h2>
+                    <div id="res-city" style="color:#94a3b8; font-size:0.9rem;">City</div>
+                </div>
+                <div id="res-risk-badge" class="risk-badge-large">GREEN</div>
+            </div>
+
+            <!-- Metrics bar -->
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:1rem; margin-bottom:1.25rem;">
+                <div style="background:#1e293b; padding:0.75rem; border-radius:6px; border:1px solid #334155;">
+                    <div style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase;">Ambient AQI</div>
+                    <div id="res-aqi" style="font-size:1.5rem; font-weight:800; color:#fff; margin-top:0.25rem;">--</div>
+                </div>
+                <div style="background:#1e293b; padding:0.75rem; border-radius:6px; border:1px solid #334155;">
+                    <div style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase;">Dominant Concern</div>
+                    <div id="res-dominant" style="font-size:1.3rem; font-weight:800; color:#ef4444; margin-top:0.25rem;">--</div>
+                </div>
+                <div style="background:#1e293b; padding:0.75rem; border-radius:6px; border:1px solid #334155;">
+                    <div style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase;">Composite Risk Index</div>
+                    <div id="res-risk-score" style="font-size:1.5rem; font-weight:800; color:#38bdf8; margin-top:0.25rem;">--</div>
+                </div>
+            </div>
+
+            <!-- Health Advisory Box -->
+            <div style="background:rgba(239, 68, 68, 0.08); border-left:4px solid #ef4444; padding:1.25rem; border-radius:6px; margin-bottom:1.25rem;">
+                <h3 id="res-headline" style="margin:0 0 0.5rem 0; font-size:1.1rem; color:#f87171;">--</h3>
+                <p id="res-pollutant-notice" style="color:#e2e8f0; font-size:0.95rem; line-height:1.5; margin:0 0 0.75rem 0; font-weight:500;">--</p>
+                <div style="background:#1e293b; padding:0.75rem; border-radius:6px; border:1px solid #334155;">
+                    <strong style="color:#38bdf8; font-size:0.85rem; text-transform:uppercase;">Targeted Group Directive:</strong>
+                    <p id="res-group-guidance" style="color:#cbd5e1; font-size:0.95rem; margin:0.35rem 0 0 0; line-height:1.5;">--</p>
+                </div>
+            </div>
+
+            <!-- Nearest Hospital Section -->
+            <div id="res-hospital-card" class="hospital-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="font-size:0.75rem; color:#38bdf8; font-weight:700; text-transform:uppercase;">🏥 Nearest Emergency Facility</span>
+                        <h4 id="res-hosp-name" style="margin:0.25rem 0; font-size:1.1rem; color:#fff;">--</h4>
+                        <div id="res-hosp-specialty" style="color:#94a3b8; font-size:0.85rem;">--</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <span id="res-hosp-dist" style="font-size:1.3rem; font-weight:800; color:#38bdf8;">-- km</span>
+                        <div id="res-hosp-phone" style="font-size:0.85rem; color:#cbd5e1; margin-top:0.25rem;">📞 --</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentLang = "en";
+        const zoneSelect = document.getElementById("zone-select");
+        const groupSelect = document.getElementById("group-select");
+        const btnCheck = document.getElementById("btn-check-area");
+        const resultBox = document.getElementById("result-box");
+
+        // Load zone list
+        async function loadZones() {
+            try {
+                const res = await fetch("/api/zones/risk");
+                const json = await res.json();
+                if (json.status === "success" && json.data) {
+                    zoneSelect.innerHTML = "";
+                    json.data.forEach(z => {
+                        const opt = document.createElement("option");
+                        opt.value = z.zone_id;
+                        opt.textContent = `${z.city} - ${z.zone_name} (${z.risk_level})`;
+                        zoneSelect.appendChild(opt);
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to load zones", err);
+            }
+        }
+
+        // Language buttons
+        document.querySelectorAll(".lang-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                currentLang = btn.dataset.lang;
+                if (resultBox.style.display === "block") {
+                    fetchStatus();
+                }
+            });
+        });
+
+        async function fetchStatus() {
+            const zid = zoneSelect.value;
+            const grp = groupSelect.value;
+            if (!zid) return;
+
+            try {
+                // Fetch advisory + facilities
+                const [advRes, facRes] = await Promise.all([
+                    fetch(`/api/advisory?zone=${zid}&group=${grp}&lang=${currentLang}`),
+                    fetch(`/api/facilities/nearby?zone=${zid}`)
+                ]);
+                const advJson = await advRes.json();
+                const facJson = await facRes.json();
+
+                if (advJson.status === "success") {
+                    const adv = advJson.advisory;
+                    document.getElementById("res-zone-name").textContent = adv.zone_name;
+                    document.getElementById("res-city").textContent = adv.city;
+                    document.getElementById("res-aqi").textContent = adv.avg_aqi ? adv.avg_aqi.toFixed(1) : "--";
+                    document.getElementById("res-risk-score").textContent = adv.risk_score ? adv.risk_score.toFixed(1) : "--";
+                    document.getElementById("res-dominant").textContent = (adv.dominant_pollutant || "PM2.5").toUpperCase();
+                    
+                    const badge = document.getElementById("res-risk-badge");
+                    badge.textContent = adv.risk_level;
+                    badge.style.background = adv.risk_level === "RED" ? "#dc2626" :
+                                             (adv.risk_level === "ORANGE" ? "#ea580c" :
+                                             (adv.risk_level === "YELLOW" ? "#ca8a04" : "#16a34a"));
+                    badge.style.color = "#fff";
+
+                    document.getElementById("res-headline").textContent = adv.headline;
+                    document.getElementById("res-pollutant-notice").textContent = adv.dominant_pollutant_notice || adv.summary;
+                    document.getElementById("res-group-guidance").textContent = adv.group_guidance || "Normal precautions.";
+
+                    // Hospital
+                    if (facJson.nearest_emergency_hospital) {
+                        const h = facJson.nearest_emergency_hospital;
+                        document.getElementById("res-hosp-name").textContent = h.name;
+                        document.getElementById("res-hosp-specialty").textContent = h.specialty;
+                        document.getElementById("res-hosp-dist").textContent = `${h.distance_km} km`;
+                        document.getElementById("res-hosp-phone").textContent = `📞 ${h.phone}`;
+                        document.getElementById("res-hospital-card").style.display = "block";
+                    } else {
+                        document.getElementById("res-hospital-card").style.display = "none";
+                    }
+
+                    resultBox.style.display = "block";
+                }
+            } catch (err) {
+                alert("Error fetching data: " + err);
+            }
+        }
+
+        btnCheck.addEventListener("click", fetchStatus);
+        loadZones();
+    </script>
+</body>
+</html>

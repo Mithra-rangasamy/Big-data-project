@@ -1,0 +1,249 @@
+[
+  {
+    "post_id": "SOC_4acd94a41c",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-15 00:28:12",
+    "date": "2026-09-15",
+    "symptoms": [
+      "skin irritation",
+      "throat irritation"
+    ],
+    "keywords": [
+      "inversion",
+      "wear_mask"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Itchy skin rashes and facial irritation after exposure to industrial fumes. #inversion #wear_mask",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_3f59b66bed",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-15 05:28:12",
+    "date": "2026-09-15",
+    "symptoms": [
+      "eye irritation"
+    ],
+    "keywords": [
+      "aqi_spike",
+      "smog"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Severe eye stinging and burning sensation after walking to the metro station. #aqi_spike #smog",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_86e8bbb14f",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-16 15:28:12",
+    "date": "2026-09-16",
+    "symptoms": [
+      "breathing difficulty",
+      "skin irritation"
+    ],
+    "keywords": [
+      "aqi_spike",
+      "inversion"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Extremely difficult to catch my breath outdoors today. The smog is choking. #aqi_spike #inversion",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_5527d43883",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-19 19:28:12",
+    "date": "2026-09-19",
+    "symptoms": [
+      "breathing difficulty",
+      "eye irritation"
+    ],
+    "keywords": [
+      "smog",
+      "respiratory"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Extremely difficult to catch my breath outdoors today. The smog is choking. #smog #respiratory",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_f82518dfc5",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-20 15:28:12",
+    "date": "2026-09-20",
+    "symptoms": [
+      "breathing difficulty"
+    ],
+    "keywords": [
+      "cpcb",
+      "inversion"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Extremely difficult to catch my breath outdoors today. The smog is choking. #cpcb #inversion",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_7284542a45",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-24 00:28:12",
+    "date": "2026-09-24",
+    "symptoms": [
+      "headache",
+      "eye irritation"
+    ],
+    "keywords": [
+      "smog",
+      "respiratory"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Throbbing headache and dizziness from the dense traffic haze. #smog #respiratory",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_3fba8684ac",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-26 03:28:12",
+    "date": "2026-09-26",
+    "symptoms": [
+      "throat irritation"
+    ],
+    "keywords": [
+      "aqi_spike",
+      "smog"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Scratchy and painful throat. The air smells acrid and full of particulate dust. #aqi_spike #smog",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_95667b0cfb",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-26 15:28:12",
+    "date": "2026-09-26",
+    "symptoms": [
+      "breathing difficulty"
+    ],
+    "keywords": [
+      "smog",
+      "aqi_spike"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Extremely difficult to catch my breath outdoors today. The smog is choking. #smog #aqi_spike",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_e562f47bdc",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-26 22:28:12",
+    "date": "2026-09-26",
+    "symptoms": [
+      "cough"
+    ],
+    "keywords": [
+      "smog",
+      "aqi_spike"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Persistent hacking cough since morning. Throat feels like sandpaper. #smog #aqi_spike",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_78b83f356c",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-27 18:28:12",
+    "date": "2026-09-27",
+    "symptoms": [
+      "skin irritation",
+      "chest tightness"
+    ],
+    "keywords": [
+      "cpcb",
+      "aqi_spike"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Itchy skin rashes and facial irritation after exposure to industrial fumes. #cpcb #aqi_spike",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_09ace03a22",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-28 14:28:12",
+    "date": "2026-09-28",
+    "symptoms": [
+      "eye irritation"
+    ],
+    "keywords": [
+      "inversion",
+      "wear_mask"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Severe eye stinging and burning sensation after walking to the metro station. #inversion #wear_mask",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_d1b5da3a1f",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-29 22:28:12",
+    "date": "2026-09-29",
+    "symptoms": [
+      "cough",
+      "skin irritation"
+    ],
+    "keywords": [
+      "respiratory",
+      "toxic_air"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Persistent hacking cough since morning. Throat feels like sandpaper. #respiratory #toxic_air",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_e70c210116",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-30 04:28:12",
+    "date": "2026-09-30",
+    "symptoms": [
+      "skin irritation",
+      "headache"
+    ],
+    "keywords": [
+      "respiratory",
+      "smog"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Itchy skin rashes and facial irritation after exposure to industrial fumes. #respiratory #smog",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_230042f899",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-30 14:28:12",
+    "date": "2026-09-30",
+    "symptoms": [
+      "breathing difficulty"
+    ],
+    "keywords": [
+      "aqi_spike",
+      "respiratory"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Extremely difficult to catch my breath outdoors today. The smog is choking. #aqi_spike #respiratory",
+    "source": "synthetic"
+  },
+  {
+    "post_id": "SOC_b173d0a2f3",
+    "city": "Delhi",
+    "zone_id": "DL001",
+    "timestamp": "2026-09-30 19:28:12",
+    "date": "2026-09-30",
+    "symptoms": [
+      "headache"
+    ],
+    "keywords": [
+      "wear_mask",
+      "aqi_spike"
+    ],
+    "text": "#Delhi #Alipur, Delhi - DPCC: Throbbing headache and dizziness from the dense traffic haze. #wear_mask #aqi_spike",
+    "source": "synthetic"
+  }
+]

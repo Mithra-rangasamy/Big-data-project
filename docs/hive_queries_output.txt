@@ -1,0 +1,667 @@
+Connecting to jdbc:hive2://localhost:10000/default
+Connected to: Apache Hive (version 4.0.1)
+Driver: Hive JDBC (version 4.0.1)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://localhost:10000/default> -- ============================================================================ ==
+0: jdbc:hive2://localhost:10000/default> -- CIT 21MDS56: Air Quality & Public Health Early-Warning System
+0: jdbc:hive2://localhost:10000/default> -- hive/queries.hql - Historical Analytical Trend & Comparison Queries
+0: jdbc:hive2://localhost:10000/default> -- All 5 required analytical queries:
+0: jdbc:hive2://localhost:10000/default> --   1. 7-day moving average AQI per city
+0: jdbc:hive2://localhost:10000/default> --   2. Worst-performing zones this month
+0: jdbc:hive2://localhost:10000/default> --   3. Daily AQI by zone
+0: jdbc:hive2://localhost:10000/default> --   4. Days exceeding an AQI threshold per city
+0: jdbc:hive2://localhost:10000/default> --   5. Weekday vs Weekend air quality comparison
+0: jdbc:hive2://localhost:10000/default> -- ============================================================================ ==
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> USE default;
+INFO  : Compiling command(queryId=mithra_20261014084546_13897e4f-3a22-4031-8cf9-f6e0680160c9): USE default
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=mithra_20261014084546_13897e4f-3a22-4031-8cf9-f6e0680160c9); Time taken: 0.007 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=mithra_20261014084546_13897e4f-3a22-4031-8cf9-f6e0680160c9): USE default
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=mithra_20261014084546_13897e4f-3a22-4031-8cf9-f6e0680160c9); Time taken: 0.007 seconds
+No rows affected (0.063 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> -- ---------------------------------------------------------------------------- --
+0: jdbc:hive2://localhost:10000/default> -- QUERY 1: 7-Day Moving Average AQI per City
+0: jdbc:hive2://localhost:10000/default> -- Demonstrates window functions over partitioned time-series
+0: jdbc:hive2://localhost:10000/default> -- ---------------------------------------------------------------------------- --
+0: jdbc:hive2://localhost:10000/default> SELECT 
+. . . . . . . . . . . . . . . . . . . .>     city,
+. . . . . . . . . . . . . . . . . . . .>     `date`,
+. . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(daily_avg_aqi) OVER (
+. . . . . . . . . . . . . . . . . . . .>         PARTITION BY city 
+. . . . . . . . . . . . . . . . . . . .>         ORDER BY `date` 
+. . . . . . . . . . . . . . . . . . . .>         ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+. . . . . . . . . . . . . . . . . . . .>     ), 2) AS aqi_7day_moving_avg
+. . . . . . . . . . . . . . . . . . . .> FROM (
+. . . . . . . . . . . . . . . . . . . .>     SELECT city, `date`, AVG(aqi) as daily_avg_aqi
+. . . . . . . . . . . . . . . . . . . .>     FROM aqi_readings
+. . . . . . . . . . . . . . . . . . . .>     GROUP BY city, `date`
+. . . . . . . . . . . . . . . . . . . .> ) daily_city
+. . . . . . . . . . . . . . . . . . . .> ORDER BY city, `date` DESC
+. . . . . . . . . . . . . . . . . . . .> LIMIT 25;
+INFO  : Compiling command(queryId=mithra_20261014084546_060b7100-6026-4a81-8b3f-a70775a4adf5): SELECT
+city,
+`date`,
+ROUND(AVG(daily_avg_aqi) OVER (
+PARTITION BY city
+ORDER BY `date`
+ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+), 2) AS aqi_7day_moving_avg
+FROM (
+SELECT city, `date`, AVG(aqi) as daily_avg_aqi
+FROM aqi_readings
+GROUP BY city, `date`
+) daily_city
+ORDER BY city, `date` DESC
+LIMIT 25
+INFO  : No Stats for default@aqi_readings, Columns: aqi
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:city, type:string, comment:null), FieldSchema(name:date, type:string, comment:null), FieldSchema(name:aqi_7day_moving_avg, type:double, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=mithra_20261014084546_060b7100-6026-4a81-8b3f-a70775a4adf5); Time taken: 0.279 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=mithra_20261014084546_060b7100-6026-4a81-8b3f-a70775a4adf5): SELECT
+city,
+`date`,
+ROUND(AVG(daily_avg_aqi) OVER (
+PARTITION BY city
+ORDER BY `date`
+ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+), 2) AS aqi_7day_moving_avg
+FROM (
+SELECT city, `date`, AVG(aqi) as daily_avg_aqi
+FROM aqi_readings
+GROUP BY city, `date`
+) daily_city
+ORDER BY city, `date` DESC
+LIMIT 25
+WARN  : Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. tez) or using Hive 1.X releases.
+INFO  : Query ID = mithra_20261014084546_060b7100-6026-4a81-8b3f-a70775a4adf5
+INFO  : Total jobs = 2
+INFO  : Launching Job 1 out of 2
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks not specified. Estimated from input data size: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1791855625879_0047
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0047/
+INFO  : Starting Job = job_1791855625879_0047, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0047/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0047
+INFO  : Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+INFO  : 2026-10-14 08:45:57,226 Stage-1 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:46:04,612 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 8.63 sec
+INFO  : 2026-10-14 08:46:12,919 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 16.2 sec
+INFO  : MapReduce Total cumulative CPU time: 16 seconds 200 msec
+INFO  : Ended Job = job_1791855625879_0047
+INFO  : Launching Job 2 out of 2
+INFO  : Starting task [Stage-2:MAPRED] in serial mode
+INFO  : Number of reduce tasks determined at compile time: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1791855625879_0048
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0048/
+INFO  : Starting Job = job_1791855625879_0048, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0048/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0048
+INFO  : Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+INFO  : 2026-10-14 08:46:27,876 Stage-2 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:46:35,021 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 3.54 sec
+INFO  : 2026-10-14 08:48:37,167 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 8.92 sec
+INFO  : MapReduce Total cumulative CPU time: 8 seconds 920 msec
+INFO  : Ended Job = job_1791855625879_0048
+INFO  : MapReduce Jobs Launched: 
+INFO  : Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 16.2 sec   HDFS Read: 2351660 HDFS Write: 6978 HDFS EC Read: 0 SUCCESS
+INFO  : Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 8.92 sec   HDFS Read: 16230 HDFS Write: 1084 HDFS EC Read: 0 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 25 seconds 120 msec
+INFO  : Completed executing command(queryId=mithra_20261014084546_060b7100-6026-4a81-8b3f-a70775a4adf5); Time taken: 56.244 seconds
++------------+-------------+----------------------+
+|    city    |    date     | aqi_7day_moving_avg  |
++------------+-------------+----------------------+
+| Bengaluru  | 2026-10-13  | 179.16               |
+| Bengaluru  | 2026-10-12  | 176.73               |
+| Bengaluru  | 2026-10-11  | 173.79               |
+| Bengaluru  | 2026-10-10  | 169.54               |
+| Bengaluru  | 2026-10-09  | 162.47               |
+| Bengaluru  | 2026-10-08  | 156.08               |
+| Bengaluru  | 2026-10-07  | 149.76               |
+| Bengaluru  | 2026-10-06  | 143.92               |
+| Bengaluru  | 2026-10-05  | 138.56               |
+| Bengaluru  | 2026-10-04  | 133.61               |
+| Bengaluru  | 2026-10-03  | 130.68               |
+| Bengaluru  | 2026-10-02  | 130.84               |
+| Bengaluru  | 2026-10-01  | 130.75               |
+| Bengaluru  | 2026-09-30  | 130.7                |
+| Bengaluru  | 2026-09-29  | 130.89               |
+| Bengaluru  | 2026-09-28  | 131.24               |
+| Bengaluru  | 2026-09-27  | 131.49               |
+| Bengaluru  | 2026-09-26  | 131.16               |
+| Bengaluru  | 2026-09-25  | 131.36               |
+| Bengaluru  | 2026-09-24  | 131.5                |
+| Bengaluru  | 2026-09-23  | 131.18               |
+| Bengaluru  | 2026-09-22  | 130.9                |
+| Bengaluru  | 2026-09-21  | 130.08               |
+| Bengaluru  | 2026-09-20  | 131.99               |
+| Bengaluru  | 2026-09-19  | 133.91               |
++------------+-------------+----------------------+
+25 rows selected (56.591 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> -- ---------------------------------------------------------------------------- --
+0: jdbc:hive2://localhost:10000/default> -- QUERY 2: Worst-Performing Zones This Month
+0: jdbc:hive2://localhost:10000/default> -- Identifies persistent hot-spots across all metropolitan zones
+0: jdbc:hive2://localhost:10000/default> -- ---------------------------------------------------------------------------- --
+0: jdbc:hive2://localhost:10000/default> SELECT 
+. . . . . . . . . . . . . . . . . . . .>     city,
+. . . . . . . . . . . . . . . . . . . .>     zone_id,
+. . . . . . . . . . . . . . . . . . . .>     zone_name,
+. . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(aqi), 1) AS monthly_avg_aqi,
+. . . . . . . . . . . . . . . . . . . .>     MAX(aqi) AS peak_aqi,
+. . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(pm25), 1) AS avg_pm25,
+. . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(pm10), 1) AS avg_pm10
+. . . . . . . . . . . . . . . . . . . .> FROM aqi_readings
+. . . . . . . . . . . . . . . . . . . .> GROUP BY city, zone_id, zone_name
+. . . . . . . . . . . . . . . . . . . .> ORDER BY monthly_avg_aqi DESC
+. . . . . . . . . . . . . . . . . . . .> LIMIT 10;
+INFO  : Compiling command(queryId=mithra_20261014084643_5618d5b0-7e83-4a4a-b7f4-6d56c8fe697c): SELECT
+city,
+zone_id,
+zone_name,
+ROUND(AVG(aqi), 1) AS monthly_avg_aqi,
+MAX(aqi) AS peak_aqi,
+ROUND(AVG(pm25), 1) AS avg_pm25,
+ROUND(AVG(pm10), 1) AS avg_pm10
+FROM aqi_readings
+GROUP BY city, zone_id, zone_name
+ORDER BY monthly_avg_aqi DESC
+LIMIT 10
+INFO  : No Stats for default@aqi_readings, Columns: zone_id, pm25, aqi, pm10, zone_name
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:city, type:string, comment:null), FieldSchema(name:zone_id, type:string, comment:null), FieldSchema(name:zone_name, type:string, comment:null), FieldSchema(name:monthly_avg_aqi, type:double, comment:null), FieldSchema(name:peak_aqi, type:int, comment:null), FieldSchema(name:avg_pm25, type:double, comment:null), FieldSchema(name:avg_pm10, type:double, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=mithra_20261014084643_5618d5b0-7e83-4a4a-b7f4-6d56c8fe697c); Time taken: 0.285 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=mithra_20261014084643_5618d5b0-7e83-4a4a-b7f4-6d56c8fe697c): SELECT
+city,
+zone_id,
+zone_name,
+ROUND(AVG(aqi), 1) AS monthly_avg_aqi,
+MAX(aqi) AS peak_aqi,
+ROUND(AVG(pm25), 1) AS avg_pm25,
+ROUND(AVG(pm10), 1) AS avg_pm10
+FROM aqi_readings
+GROUP BY city, zone_id, zone_name
+ORDER BY monthly_avg_aqi DESC
+LIMIT 10
+WARN  : Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. tez) or using Hive 1.X releases.
+INFO  : Query ID = mithra_20261014084643_5618d5b0-7e83-4a4a-b7f4-6d56c8fe697c
+INFO  : Total jobs = 2
+INFO  : Launching Job 1 out of 2
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks not specified. Estimated from input data size: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1791855625879_0049
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0049/
+INFO  : Starting Job = job_1791855625879_0049, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0049/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0049
+INFO  : Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+INFO  : 2026-10-14 08:46:57,312 Stage-1 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:47:04,790 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 10.41 sec
+INFO  : 2026-10-14 08:47:13,099 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 18.39 sec
+INFO  : MapReduce Total cumulative CPU time: 18 seconds 390 msec
+INFO  : Ended Job = job_1791855625879_0049
+INFO  : Launching Job 2 out of 2
+INFO  : Starting task [Stage-2:MAPRED] in serial mode
+INFO  : Number of reduce tasks determined at compile time: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1791855625879_0050
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0050/
+INFO  : Starting Job = job_1791855625879_0050, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0050/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0050
+INFO  : Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+INFO  : 2026-10-14 08:47:28,753 Stage-2 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:47:34,972 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 4.44 sec
+INFO  : 2026-10-14 08:47:42,348 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 8.83 sec
+INFO  : MapReduce Total cumulative CPU time: 8 seconds 830 msec
+INFO  : Ended Job = job_1791855625879_0050
+INFO  : MapReduce Jobs Launched: 
+INFO  : Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 18.39 sec   HDFS Read: 2353961 HDFS Write: 2198 HDFS EC Read: 0 SUCCESS
+INFO  : Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 8.83 sec   HDFS Read: 13228 HDFS Write: 841 HDFS EC Read: 0 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 27 seconds 220 msec
+INFO  : Completed executing command(queryId=mithra_20261014084643_5618d5b0-7e83-4a4a-b7f4-6d56c8fe697c); Time taken: 59.527 seconds
++-------------+------------+------------------------------+------------------+-----------+-----------+-----------+
+|    city     |  zone_id   |          zone_name           | monthly_avg_aqi  | peak_aqi  | avg_pm25  | avg_pm10  |
++-------------+------------+------------------------------+------------------+-----------+-----------+-----------+
+| Mumbai      | BOM_ZN_01  | Bandra-Kurla Complex         | 258.9            | 384       | 170.4     | 300.5     |
+| Chennai     | CHN_ZN_01  | Manali Petrochemical Belt    | 213.0            | 500       | 141.2     | 247.4     |
+| Delhi       | DEL_ZN_01  | Anand Vihar Trans-Yamuna     | 213.0            | 500       | 140.9     | 247.0     |
+| Delhi       | DEL_ZN_02  | Jahangirpuri Industrial      | 212.9            | 500       | 140.8     | 247.2     |
+| Mumbai      | BOM_ZN_02  | Chembur Industrial Corridor  | 212.5            | 500       | 140.7     | 246.7     |
+| Bengaluru   | BLR_ZN_03  | Peenya Industrial Area       | 212.4            | 500       | 140.5     | 247.1     |
+| Coimbatore  | CBE_ZN_01  | SIDCO Industrial Estate      | 212.1            | 500       | 140.5     | 246.0     |
+| Coimbatore  | CBE_ZN_02  | Gandhipuram Central          | 177.4            | 269       | 117.8     | 206.6     |
+| Mumbai      | BOM_ZN_03  | Andheri Western Hub          | 176.6            | 269       | 117.2     | 205.5     |
+| Bengaluru   | BLR_ZN_02  | Silk Board Junction          | 175.9            | 269       | 116.6     | 205.0     |
++-------------+------------+------------------------------+------------------+-----------+-----------+-----------+
+10 rows selected (59.848 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> -- ---------------------------------------------------------------------------- --
+0: jdbc:hive2://localhost:10000/default> -- QUERY 3: Daily AQI by Zone
+0: jdbc:hive2://localhost:10000/default> -- Zone-level daily time-series aggregation for trend inspection
+0: jdbc:hive2://localhost:10000/default> -- ---------------------------------------------------------------------------- --
+0: jdbc:hive2://localhost:10000/default> SELECT 
+. . . . . . . . . . . . . . . . . . . .>     city,
+. . . . . . . . . . . . . . . . . . . .>     zone_id,
+. . . . . . . . . . . . . . . . . . . .>     zone_name,
+. . . . . . . . . . . . . . . . . . . .>     `date`,
+. . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(aqi), 1) AS daily_avg_aqi,
+. . . . . . . . . . . . . . . . . . . .>     MAX(aqi) AS peak_aqi,
+. . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(pm25), 1) AS daily_avg_pm25
+. . . . . . . . . . . . . . . . . . . .> FROM aqi_readings
+. . . . . . . . . . . . . . . . . . . .> GROUP BY city, zone_id, zone_name, `date`
+. . . . . . . . . . . . . . . . . . . .> ORDER BY `date` DESC, daily_avg_aqi DESC
+. . . . . . . . . . . . . . . . . . . .> LIMIT 25;
+INFO  : Compiling command(queryId=mithra_20261014084743_59ddb7ce-5db1-4261-89aa-4bd977145cb9): SELECT
+city,
+zone_id,
+zone_name,
+`date`,
+ROUND(AVG(aqi), 1) AS daily_avg_aqi,
+MAX(aqi) AS peak_aqi,
+ROUND(AVG(pm25), 1) AS daily_avg_pm25
+FROM aqi_readings
+GROUP BY city, zone_id, zone_name, `date`
+ORDER BY `date` DESC, daily_avg_aqi DESC
+LIMIT 25
+INFO  : No Stats for default@aqi_readings, Columns: zone_id, pm25, aqi, zone_name
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:city, type:string, comment:null), FieldSchema(name:zone_id, type:string, comment:null), FieldSchema(name:zone_name, type:string, comment:null), FieldSchema(name:date, type:string, comment:null), FieldSchema(name:daily_avg_aqi, type:double, comment:null), FieldSchema(name:peak_aqi, type:int, comment:null), FieldSchema(name:daily_avg_pm25, type:double, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=mithra_20261014084743_59ddb7ce-5db1-4261-89aa-4bd977145cb9); Time taken: 0.32 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=mithra_20261014084743_59ddb7ce-5db1-4261-89aa-4bd977145cb9): SELECT
+city,
+zone_id,
+zone_name,
+`date`,
+ROUND(AVG(aqi), 1) AS daily_avg_aqi,
+MAX(aqi) AS peak_aqi,
+ROUND(AVG(pm25), 1) AS daily_avg_pm25
+FROM aqi_readings
+GROUP BY city, zone_id, zone_name, `date`
+ORDER BY `date` DESC, daily_avg_aqi DESC
+LIMIT 25
+WARN  : Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. tez) or using Hive 1.X releases.
+INFO  : Query ID = mithra_20261014084743_59ddb7ce-5db1-4261-89aa-4bd977145cb9
+INFO  : Total jobs = 2
+INFO  : Launching Job 1 out of 2
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks not specified. Estimated from input data size: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1791855625879_0051
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0051/
+INFO  : Starting Job = job_1791855625879_0051, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0051/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0051
+INFO  : Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+INFO  : 2026-10-14 08:47:56,878 Stage-1 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:48:05,051 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 9.89 sec
+INFO  : 2026-10-14 08:50:07,233 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 9.89 sec
+INFO  : 2026-10-14 08:48:13,496 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 16.69 sec
+INFO  : MapReduce Total cumulative CPU time: 16 seconds 690 msec
+INFO  : Ended Job = job_1791855625879_0051
+INFO  : Launching Job 2 out of 2
+INFO  : Starting task [Stage-2:MAPRED] in serial mode
+INFO  : Number of reduce tasks determined at compile time: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1791855625879_0052
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0052/
+INFO  : Starting Job = job_1791855625879_0052, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0052/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0052
+INFO  : Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+INFO  : 2026-10-14 08:48:27,990 Stage-2 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:48:34,317 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 4.11 sec
+INFO  : 2026-10-14 08:50:37,445 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 8.86 sec
+INFO  : MapReduce Total cumulative CPU time: 8 seconds 860 msec
+INFO  : Ended Job = job_1791855625879_0052
+INFO  : MapReduce Jobs Launched: 
+INFO  : Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 16.69 sec   HDFS Read: 2353125 HDFS Write: 67389 HDFS EC Read: 0 SUCCESS
+INFO  : Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 8.86 sec   HDFS Read: 78389 HDFS Write: 2058 HDFS EC Read: 0 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 25 seconds 550 msec
+INFO  : Completed executing command(queryId=mithra_20261014084743_59ddb7ce-5db1-4261-89aa-4bd977145cb9); Time taken: 58.845 seconds
++-------------+------------+--------------------------------+-------------+----------------+-----------+-----------------+
+|    city     |  zone_id   |           zone_name            |    date     | daily_avg_aqi  | peak_aqi  | daily_avg_pm25  |
++-------------+------------+--------------------------------+-------------+----------------+-----------+-----------------+
+| Coimbatore  | CBE_ZN_01  | SIDCO Industrial Estate        | 2026-10-13  | 422.7          | 500       | 277.3           |
+| Delhi       | DEL_ZN_01  | Anand Vihar Trans-Yamuna       | 2026-10-13  | 421.5          | 500       | 276.2           |
+| Chennai     | CHN_ZN_01  | Manali Petrochemical Belt      | 2026-10-13  | 421.5          | 500       | 277.0           |
+| Mumbai      | BOM_ZN_02  | Chembur Industrial Corridor    | 2026-10-13  | 421.0          | 500       | 275.8           |
+| Bengaluru   | BLR_ZN_03  | Peenya Industrial Area         | 2026-10-13  | 419.4          | 500       | 274.0           |
+| Delhi       | DEL_ZN_02  | Jahangirpuri Industrial        | 2026-10-13  | 419.3          | 500       | 273.0           |
+| Mumbai      | BOM_ZN_01  | Bandra-Kurla Complex           | 2026-10-13  | 253.9          | 376       | 166.6           |
+| Mumbai      | BOM_ZN_03  | Andheri Western Hub            | 2026-10-13  | 185.9          | 268       | 123.6           |
+| Coimbatore  | CBE_ZN_02  | Gandhipuram Central            | 2026-10-13  | 178.3          | 258       | 118.1           |
+| Chennai     | CHN_ZN_02  | T Nagar Retail Core            | 2026-10-13  | 175.7          | 247       | 115.4           |
+| Bengaluru   | BLR_ZN_01  | Whitefield IT Cluster          | 2026-10-13  | 174.9          | 214       | 115.3           |
+| Bengaluru   | BLR_ZN_02  | Silk Board Junction            | 2026-10-13  | 171.4          | 246       | 114.0           |
+| Delhi       | DEL_ZN_03  | ITO Junction                   | 2026-10-13  | 169.8          | 241       | 112.5           |
+| Delhi       | DEL_ZN_04  | RK Puram South                 | 2026-10-13  | 112.0          | 165       | 75.8            |
+| Chennai     | CHN_ZN_04  | Guindy Industrial Estate       | 2026-10-13  | 111.4          | 163       | 75.6            |
+| Chennai     | CHN_ZN_03  | Velachery Urban Wetland        | 2026-10-13  | 110.6          | 172       | 72.8            |
+| Bengaluru   | BLR_ZN_05  | Electronic City Tech Hub       | 2026-10-13  | 110.1          | 172       | 73.1            |
+| Coimbatore  | CBE_ZN_05  | Saravanampatti IT Park         | 2026-10-13  | 109.0          | 169       | 72.8            |
+| Coimbatore  | CBE_ZN_03  | Peelamedu Tech Corridor        | 2026-10-13  | 108.4          | 175       | 72.2            |
+| Mumbai      | BOM_ZN_05  | Borivali National Park Fringe  | 2026-10-13  | 56.5           | 80        | 38.6            |
+| Mumbai      | BOM_ZN_04  | Colaba Coastal Tip             | 2026-10-13  | 54.0           | 85        | 39.6            |
+| Coimbatore  | CBE_ZN_04  | RS Puram Residential           | 2026-10-13  | 52.4           | 86        | 37.1            |
+| Delhi       | DEL_ZN_05  | Lodhi Estate Forest Belt       | 2026-10-13  | 51.4           | 87        | 36.2            |
+| Chennai     | CHN_ZN_05  | Alwarpet Green Zone            | 2026-10-13  | 51.2           | 87        | 35.4            |
+| Bengaluru   | BLR_ZN_04  | Cubbon Park Green Zone         | 2026-10-13  | 49.2           | 79        | 34.1            |
++-------------+------------+--------------------------------+-------------+----------------+-----------+-----------------+
+25 rows selected (59.191 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> -- ---------------------------------------------------------------------------- --
+0: jdbc:hive2://localhost:10000/default> -- QUERY 4: Days Exceeding an AQI Threshold (AQI > 200: Poor/Severe) per City
+0: jdbc:hive2://localhost:10000/default> -- Identifies municipal vulnerability and violation counts of CPCB standards
+0: jdbc:hive2://localhost:10000/default> -- ---------------------------------------------------------------------------- --
+0: jdbc:hive2://localhost:10000/default> SELECT 
+. . . . . . . . . . . . . . . . . . . .>     city,
+. . . . . . . . . . . . . . . . . . . .>     COUNT(DISTINCT `date`) AS total_monitored_days,
+. . . . . . . . . . . . . . . . . . . .>     COUNT(DISTINCT CASE WHEN daily_city_aqi > 200 THEN `date` END) AS days_exce eding_200,
+. . . . . . . . . . . . . . . . . . . .>     COUNT(DISTINCT CASE WHEN daily_city_aqi > 300 THEN `date` END) AS days_seve re_above_300,
+. . . . . . . . . . . . . . . . . . . .>     ROUND(100.0 * COUNT(DISTINCT CASE WHEN daily_city_aqi > 200 THEN `date` END ) / COUNT(DISTINCT `date`), 1) AS violation_percentage
+. . . . . . . . . . . . . . . . . . . .> FROM (
+. . . . . . . . . . . . . . . . . . . .>     SELECT city, `date`, AVG(aqi) AS daily_city_aqi
+. . . . . . . . . . . . . . . . . . . .>     FROM aqi_readings
+. . . . . . . . . . . . . . . . . . . .>     GROUP BY city, `date`
+. . . . . . . . . . . . . . . . . . . .> ) city_daily_summary
+. . . . . . . . . . . . . . . . . . . .> GROUP BY city
+. . . . . . . . . . . . . . . . . . . .> ORDER BY days_exceeding_200 DESC;
+INFO  : Compiling command(queryId=mithra_20261014084842_d0affcc2-676e-464b-b229-991b589d138d): SELECT
+city,
+COUNT(DISTINCT `date`) AS total_monitored_days,
+COUNT(DISTINCT CASE WHEN daily_city_aqi > 200 THEN `date` END) AS days_exceeding_200,
+COUNT(DISTINCT CASE WHEN daily_city_aqi > 300 THEN `date` END) AS days_severe_above_300,
+ROUND(100.0 * COUNT(DISTINCT CASE WHEN daily_city_aqi > 200 THEN `date` END) / COUNT(DISTINCT `date`), 1) AS violation_percentage
+FROM (
+SELECT city, `date`, AVG(aqi) AS daily_city_aqi
+FROM aqi_readings
+GROUP BY city, `date`
+) city_daily_summary
+GROUP BY city
+ORDER BY days_exceeding_200 DESC
+INFO  : No Stats for default@aqi_readings, Columns: aqi
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:city, type:string, comment:null), FieldSchema(name:total_monitored_days, type:bigint, comment:null), FieldSchema(name:days_exceeding_200, type:bigint, comment:null), FieldSchema(name:days_severe_above_300, type:bigint, comment:null), FieldSchema(name:violation_percentage, type:decimal(25,1), comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=mithra_20261014084842_d0affcc2-676e-464b-b229-991b589d138d); Time taken: 0.365 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=mithra_20261014084842_d0affcc2-676e-464b-b229-991b589d138d): SELECT
+city,
+COUNT(DISTINCT `date`) AS total_monitored_days,
+COUNT(DISTINCT CASE WHEN daily_city_aqi > 200 THEN `date` END) AS days_exceeding_200,
+COUNT(DISTINCT CASE WHEN daily_city_aqi > 300 THEN `date` END) AS days_severe_above_300,
+ROUND(100.0 * COUNT(DISTINCT CASE WHEN daily_city_aqi > 200 THEN `date` END) / COUNT(DISTINCT `date`), 1) AS violation_percentage
+FROM (
+SELECT city, `date`, AVG(aqi) AS daily_city_aqi
+FROM aqi_readings
+GROUP BY city, `date`
+) city_daily_summary
+GROUP BY city
+ORDER BY days_exceeding_200 DESC
+WARN  : Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. tez) or using Hive 1.X releases.
+INFO  : Query ID = mithra_20261014084842_d0affcc2-676e-464b-b229-991b589d138d
+INFO  : Total jobs = 3
+INFO  : Launching Job 1 out of 3
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks not specified. Estimated from input data size: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1791855625879_0053
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0053/
+INFO  : Starting Job = job_1791855625879_0053, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0053/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0053
+INFO  : Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+INFO  : 2026-10-14 08:48:57,253 Stage-1 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:49:04,301 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 9.11 sec
+INFO  : 2026-10-14 08:51:02,499 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 9.11 sec
+INFO  : 2026-10-14 08:49:12,823 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 15.97 sec
+INFO  : MapReduce Total cumulative CPU time: 15 seconds 970 msec
+INFO  : Ended Job = job_1791855625879_0053
+INFO  : Launching Job 2 out of 3
+INFO  : Starting task [Stage-2:MAPRED] in serial mode
+INFO  : Number of reduce tasks not specified. Estimated from input data size: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1791855625879_0054
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0054/
+INFO  : Starting Job = job_1791855625879_0054, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0054/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0054
+INFO  : Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+INFO  : 2026-10-14 08:49:28,701 Stage-2 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:51:27,605 Stage-2 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:49:34,822 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 3.79 sec
+INFO  : 2026-10-14 08:49:43,186 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 10.82 sec
+INFO  : MapReduce Total cumulative CPU time: 10 seconds 820 msec
+INFO  : Ended Job = job_1791855625879_0054
+INFO  : Launching Job 3 out of 3
+INFO  : Starting task [Stage-3:MAPRED] in serial mode
+INFO  : Number of reduce tasks determined at compile time: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1791855625879_0055
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0055/
+INFO  : Starting Job = job_1791855625879_0055, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0055/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0055
+INFO  : Hadoop job information for Stage-3: number of mappers: 1; number of reducers: 1
+INFO  : 2026-10-14 08:49:58,160 Stage-3 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:50:04,316 Stage-3 map = 100%,  reduce = 0%, Cumulative CPU 3.69 sec
+INFO  : 2026-10-14 08:50:11,557 Stage-3 map = 100%,  reduce = 100%, Cumulative CPU 8.05 sec
+INFO  : MapReduce Total cumulative CPU time: 8 seconds 50 msec
+INFO  : Ended Job = job_1791855625879_0055
+INFO  : MapReduce Jobs Launched: 
+INFO  : Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 15.97 sec   HDFS Read: 2350208 HDFS Write: 6280 HDFS EC Read: 0 SUCCESS
+INFO  : Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 10.82 sec   HDFS Read: 17521 HDFS Write: 254 HDFS EC Read: 0 SUCCESS
+INFO  : Stage-Stage-3: Map: 1  Reduce: 1   Cumulative CPU: 8.05 sec   HDFS Read: 10418 HDFS Write: 245 HDFS EC Read: 0 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 34 seconds 840 msec
+INFO  : Completed executing command(queryId=mithra_20261014084842_d0affcc2-676e-464b-b229-991b589d138d); Time taken: 89.271 seconds
++-------------+-----------------------+---------------------+------------------------+-----------------------+
+|    city     | total_monitored_days  | days_exceeding_200  | days_severe_above_300  | violation_percentage  |
++-------------+-----------------------+---------------------+------------------------+-----------------------+
+| Delhi       | 31                    | 7                   | 0                      | 22.6                  |
+| Mumbai      | 31                    | 0                   | 0                      | 0.0                   |
+| Coimbatore  | 31                    | 0                   | 0                      | 0.0                   |
+| Chennai     | 31                    | 0                   | 0                      | 0.0                   |
+| Bengaluru   | 31                    | 0                   | 0                      | 0.0                   |
++-------------+-----------------------+---------------------+------------------------+-----------------------+
+5 rows selected (89.682 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> -- ---------------------------------------------------------------------------- --
+0: jdbc:hive2://localhost:10000/default> -- QUERY 5: Weekday vs Weekend Comparison
+0: jdbc:hive2://localhost:10000/default> -- Evaluates vehicular and commercial emission differences
+0: jdbc:hive2://localhost:10000/default> -- ---------------------------------------------------------------------------- --
+0: jdbc:hive2://localhost:10000/default> SELECT 
+. . . . . . . . . . . . . . . . . . . .>     city,
+. . . . . . . . . . . . . . . . . . . .>     day_type,
+. . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(aqi), 1) AS avg_aqi,
+. . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(pm25), 1) AS avg_pm25,
+. . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(no2), 1) AS avg_no2,
+. . . . . . . . . . . . . . . . . . . .>     COUNT(*) AS total_hourly_readings
+. . . . . . . . . . . . . . . . . . . .> FROM (
+. . . . . . . . . . . . . . . . . . . .>     SELECT 
+. . . . . . . . . . . . . . . . . . . .>         city,
+. . . . . . . . . . . . . . . . . . . .>         aqi,
+. . . . . . . . . . . . . . . . . . . .>         pm25,
+. . . . . . . . . . . . . . . . . . . .>         no2,
+. . . . . . . . . . . . . . . . . . . .>         CASE 
+. . . . . . . . . . . . . . . . . . . .>             WHEN from_unixtime(unix_timestamp(`date`, 'yyyy-MM-dd'), 'u') IN (' 6', '7') THEN 'WEEKEND'
+. . . . . . . . . . . . . . . . . . . .>             ELSE 'WEEKDAY'
+. . . . . . . . . . . . . . . . . . . .>         END AS day_type
+. . . . . . . . . . . . . . . . . . . .>     FROM aqi_readings
+. . . . . . . . . . . . . . . . . . . .> ) labeled_readings
+. . . . . . . . . . . . . . . . . . . .> GROUP BY city, day_type
+. . . . . . . . . . . . . . . . . . . .> ORDER BY city, day_type;
+INFO  : Compiling command(queryId=mithra_20261014085012_d98ad5a1-d47e-4403-8663-89f22fef434d): SELECT
+city,
+day_type,
+ROUND(AVG(aqi), 1) AS avg_aqi,
+ROUND(AVG(pm25), 1) AS avg_pm25,
+ROUND(AVG(no2), 1) AS avg_no2,
+COUNT(*) AS total_hourly_readings
+FROM (
+SELECT
+city,
+aqi,
+pm25,
+no2,
+CASE
+WHEN from_unixtime(unix_timestamp(`date`, 'yyyy-MM-dd'), 'u') IN ('6', '7') THEN 'WEEKEND'
+ELSE 'WEEKDAY'
+END AS day_type
+FROM aqi_readings
+) labeled_readings
+GROUP BY city, day_type
+ORDER BY city, day_type
+INFO  : No Stats for default@aqi_readings, Columns: no2, pm25, aqi
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:city, type:string, comment:null), FieldSchema(name:day_type, type:string, comment:null), FieldSchema(name:avg_aqi, type:double, comment:null), FieldSchema(name:avg_pm25, type:double, comment:null), FieldSchema(name:avg_no2, type:double, comment:null), FieldSchema(name:total_hourly_readings, type:bigint, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=mithra_20261014085012_d98ad5a1-d47e-4403-8663-89f22fef434d); Time taken: 0.301 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=mithra_20261014085012_d98ad5a1-d47e-4403-8663-89f22fef434d): SELECT
+city,
+day_type,
+ROUND(AVG(aqi), 1) AS avg_aqi,
+ROUND(AVG(pm25), 1) AS avg_pm25,
+ROUND(AVG(no2), 1) AS avg_no2,
+COUNT(*) AS total_hourly_readings
+FROM (
+SELECT
+city,
+aqi,
+pm25,
+no2,
+CASE
+WHEN from_unixtime(unix_timestamp(`date`, 'yyyy-MM-dd'), 'u') IN ('6', '7') THEN 'WEEKEND'
+ELSE 'WEEKDAY'
+END AS day_type
+FROM aqi_readings
+) labeled_readings
+GROUP BY city, day_type
+ORDER BY city, day_type
+WARN  : Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. tez) or using Hive 1.X releases.
+INFO  : Query ID = mithra_20261014085012_d98ad5a1-d47e-4403-8663-89f22fef434d
+INFO  : Total jobs = 2
+INFO  : Launching Job 1 out of 2
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks not specified. Estimated from input data size: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1791855625879_0056
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0056/
+INFO  : Starting Job = job_1791855625879_0056, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0056/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0056
+INFO  : Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+INFO  : 2026-10-14 08:50:26,318 Stage-1 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:50:34,610 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 9.45 sec
+INFO  : 2026-10-14 08:52:32,543 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 9.45 sec
+INFO  : 2026-10-14 08:52:37,716 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 16.84 sec
+INFO  : MapReduce Total cumulative CPU time: 16 seconds 840 msec
+INFO  : Ended Job = job_1791855625879_0056
+INFO  : Launching Job 2 out of 2
+INFO  : Starting task [Stage-2:MAPRED] in serial mode
+INFO  : Number of reduce tasks determined at compile time: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1791855625879_0057
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0057/
+INFO  : Starting Job = job_1791855625879_0057, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0057/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0057
+INFO  : Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+INFO  : 2026-10-14 08:52:52,918 Stage-2 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 08:51:03,347 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 4.45 sec
+INFO  : 2026-10-14 08:51:10,511 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 9.04 sec
+INFO  : MapReduce Total cumulative CPU time: 9 seconds 40 msec
+INFO  : Ended Job = job_1791855625879_0057
+INFO  : MapReduce Jobs Launched: 
+INFO  : Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 16.84 sec   HDFS Read: 2355258 HDFS Write: 398 HDFS EC Read: 0 SUCCESS
+INFO  : Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 9.04 sec   HDFS Read: 10915 HDFS Write: 336 HDFS EC Read: 0 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 25 seconds 880 msec
+INFO  : Completed executing command(queryId=mithra_20261014085012_d98ad5a1-d47e-4403-8663-89f22fef434d); Time taken: 58.55 seconds
++-------------+-----------+----------+-----------+----------+------------------------+
+|    city     | day_type  | avg_aqi  | avg_pm25  | avg_no2  | total_hourly_readings  |
++-------------+-----------+----------+-----------+----------+------------------------+
+| Bengaluru   | WEEKDAY   | 145.5    | 97.0      | 42.2     | 3615                   |
+| Chennai     | WEEKDAY   | 132.6    | 88.8      | 38.6     | 3615                   |
+| Coimbatore  | WEEKDAY   | 132.8    | 88.8      | 38.7     | 3615                   |
+| Delhi       | WEEKDAY   | 153.0    | 101.9     | 44.3     | 3615                   |
+| Mumbai      | WEEKDAY   | 150.3    | 100.2     | 43.6     | 3615                   |
++-------------+-----------+----------+-----------+----------+------------------------+
+5 rows selected (58.864 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> Closing: 0: jdbc:hive2://localhost:10000/default

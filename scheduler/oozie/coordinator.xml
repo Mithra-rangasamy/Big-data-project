@@ -1,0 +1,27 @@
+<coordinator-app name="air-quality-ews-coordinator"
+                 frequency="${coord:minutes(30)}"
+                 start="2026-10-01T00:00Z"
+                 end="2027-10-01T00:00Z"
+                 timezone="UTC"
+                 xmlns="uri:oozie:coordinator:0.4">
+    <controls>
+        <timeout>60</timeout>
+        <concurrency>1</concurrency>
+        <execution>FIFO</execution>
+    </controls>
+    <action>
+        <workflow>
+            <app-path>${nameNode}/apps/air-quality-ews/workflow.xml</app-path>
+            <configuration>
+                <property>
+                    <name>jobTracker</name>
+                    <value>${jobTracker}</value>
+                </property>
+                <property>
+                    <name>nameNode</name>
+                    <value>${nameNode}</value>
+                </property>
+            </configuration>
+        </workflow>
+    </action>
+</coordinator-app>

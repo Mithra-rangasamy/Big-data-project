@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Municipal Administration Console | CIT 21MDS56</title>
+    <link rel="stylesheet" href="/static/css/styles.css?v=3.0">
+</head>
+<body style="background: #0b1120; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+    <!-- Navigation Header -->
+    <header class="navbar" style="border-bottom: 1px solid #1e293b; padding: 0.75rem 2rem;">
+        <div class="brand">
+            <span class="brand-icon">🛡️</span>
+            <div>
+                <a href="/" style="color:inherit; text-decoration:none;" class="brand-title">Municipal Administration Console</a>
+                <div class="brand-subtitle">CIT 21MDS56 Big Data Computing &bull; Surveillance &amp; Audit Logs</div>
+            </div>
+        </div>
+        <div class="nav-actions">
+            <a href="/" class="btn btn-secondary">📊 Public Dashboard</a>
+            <a href="/status" class="btn btn-secondary">⚙️ Pipeline Status</a>
+            <a href="/alerts" class="btn btn-secondary">🚨 Alert Log</a>
+            <a href="/logout" class="btn btn-secondary" style="border-color:#ef4444; color:#ef4444;">🚪 Sign Out</a>
+        </div>
+    </header>
+
+    <main class="admin-container" style="max-width:1400px; margin:2rem auto; padding:0 1.5rem;">
+        
+        <!-- Ranked-Zone Surveillance Table -->
+        <div class="admin-card" style="background:#1e293b; border:1px solid #334155; border-radius:8px; padding:1.25rem; margin-bottom:1.75rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+                <div>
+                    <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0; color: #fff;">
+                        🏙️ Monitored Zones Surveillance Matrix
+                    </h2>
+                    <p style="color: #94a3b8; font-size: 0.825rem; margin: 0.25rem 0 0 0;">
+                        Live composite health rankings, environmental telemetry, and citizen morbidity indicators.
+                    </p>
+                </div>
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <label for="admin-date-select" style="font-size:0.85rem; color:#94a3b8; font-weight:600;">Date:</label>
+                    <select id="admin-date-select" class="form-control" style="background:#0f172a; color:#f8fafc; border:1px solid #334155; border-radius:6px; padding:4px 8px; font-size:12px;">
+                        <option value="">Loading dates...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="admin-table-responsive" style="overflow-x:auto;">
+                <table class="admin-table" style="width:100%; border-collapse:collapse; font-size:13px;">
+                    <thead>
+                        <tr style="border-bottom:1px solid #334155; text-align:left; color:#94a3b8;">
+                            <th style="padding:10px 12px;">Rank</th>
+                            <th style="padding:10px 12px;">Zone &bull; Locality</th>
+                            <th style="padding:10px 12px;">City</th>
+                            <th style="padding:10px 12px;">Risk Score</th>
+                            <th style="padding:10px 12px;">Risk Level</th>
+                            <th style="padding:10px 12px;">Ambient AQI</th>
+                            <th style="padding:10px 12px;">Complaints</th>
+                            <th style="padding:10px 12px;">Dominant Concern</th>
+                            <th style="padding:10px 12px;">Outbreak Alert</th>
+                        </tr>
+                    </thead>
+                    <tbody id="zones-table-tbody">
+                        <tr><td colspan="9" style="text-align:center; color:#94a3b8; padding:20px;">Loading surveillance data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section: Statistical Anomaly Spikes (Feature C) -->
+        <div class="admin-card" style="background:#1e293b; border:1px solid #334155; border-radius:8px; padding:1.25rem; margin-bottom:1.75rem;">
+            <div style="margin-bottom:1rem;">
+                <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0; color: #fff;">
+                    ⚡ Statistical Anomaly Spikes (Feature C: Z-Score &gt; 2.0 / 2.5)
+                </h2>
+                <p style="color: #94a3b8; font-size: 0.825rem; margin: 0.25rem 0 0 0;">
+                    Sudden industrial emission plumes and localized toxic events detected via rolling 30-day Z-scores.
+                </p>
+            </div>
+            <div class="admin-table-responsive" style="overflow-x:auto;">
+                <table class="admin-table" style="width:100%; border-collapse:collapse; font-size:13px;">
+                    <thead>
+                        <tr style="border-bottom:1px solid #334155; text-align:left; color:#94a3b8;">
+                            <th style="padding:10px 12px;">Date</th>
+                            <th style="padding:10px 12px;">Zone &bull; Locality</th>
+                            <th style="padding:10px 12px;">City</th>
+                            <th style="padding:10px 12px;">AQI Value</th>
+                            <th style="padding:10px 12px;">Rolling Mean</th>
+                            <th style="padding:10px 12px;">Z-Score</th>
+                            <th style="padding:10px 12px;">Anomaly Severity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="anomalies-table-tbody">
+                        <tr><td colspan="7" style="text-align:center; color:#94a3b8; padding:20px;">Loading anomaly detections...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section: Rejected Complaints Quality Gate Audit Log (Feature E) -->
+        <div class="admin-card" style="background:#1e293b; border:1px solid #334155; border-radius:8px; padding:1.25rem; margin-bottom:1.75rem;">
+            <div style="margin-bottom:1rem;">
+                <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0; color: #fff;">
+                    🛡️ Complaint Quality Gate Audit Log (Feature E: MongoDB `rejected_reports`)
+                </h2>
+                <p style="color: #94a3b8; font-size: 0.825rem; margin: 0.25rem 0 0 0;">
+                    Audit trail of filtered submissions (spam, character repetition, rate limits, 1-hour deduplication).
+                </p>
+            </div>
+            <div class="admin-table-responsive" style="overflow-x:auto;">
+                <table class="admin-table" style="width:100%; border-collapse:collapse; font-size:13px;">
+                    <thead>
+                        <tr style="border-bottom:1px solid #334155; text-align:left; color:#94a3b8;">
+                            <th style="padding:10px 12px;">Report ID</th>
+                            <th style="padding:10px 12px;">Zone &bull; Locality</th>
+                            <th style="padding:10px 12px;">Citizen / Reporter</th>
+                            <th style="padding:10px 12px;">Submitted Description</th>
+                            <th style="padding:10px 12px;">Rejection Rule &amp; Cause</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rejected-table-tbody">
+                        <tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:20px;">Loading quality filter logs...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section: Lag-Correlation Analysis (Feature D) -->
+        <div class="admin-card" style="background:#1e293b; border:1px solid #334155; border-radius:8px; padding:1.25rem; margin-bottom:1.75rem;">
+            <div style="margin-bottom:1rem;">
+                <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0; color: #fff;">
+                    📈 Pearson Lag-Correlation Matrix (Feature D: Hive `aqi_complaint_correlation`)
+                </h2>
+                <p style="color: #94a3b8; font-size: 0.825rem; margin: 0.25rem 0 0 0;">
+                    Temporal latency correlation between daily AQI levels and citizen health complaints across lags 0 to 3 days.
+                </p>
+            </div>
+            <div id="correlation-container" style="background:#0f172a; padding:1.25rem; border-radius:6px; border:1px solid #334155; font-size:13px; line-height:1.6;">
+                Loading Pearson correlation matrix...
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        let currentDate = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadDatesDropdown();
+            loadAnomalies();
+            loadRejectedReports();
+            loadCorrelation();
+        });
+
+        async function loadDatesDropdown() {
+            try {
+                const res = await fetch("/api/dates");
+                const data = await res.json();
+                if (data.status === "success") {
+                    const sel = document.getElementById("admin-date-select");
+                    sel.innerHTML = "";
+                    data.dates.forEach(d => {
+                        const opt = document.createElement("option");
+                        opt.value = d;
+                        opt.textContent = d;
+                        if (d === data.latest) opt.selected = true;
+                        sel.appendChild(opt);
+                    });
+                    currentDate = data.latest;
+                    loadRankedZones(currentDate);
+
+                    sel.addEventListener("change", (e) => {
+                        currentDate = e.target.value;
+                        loadRankedZones(currentDate);
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to load dates:", err);
+            }
+        }
+
+        async function loadRankedZones(targetDate) {
+            try {
+                const res = await fetch(`/api/zones/risk?date=${targetDate}`);
+                const data = await res.json();
+                if (data.status === "success") {
+                    const sorted = data.data.sort((a, b) => b.risk_score - a.risk_score);
+                    const tbody = document.getElementById("zones-table-tbody");
+                    tbody.innerHTML = "";
+
+                    sorted.forEach((z, idx) => {
+                        const badgeColor = z.risk_level === "RED" ? "#ef4444" : (z.risk_level === "ORANGE" ? "#f97316" : (z.risk_level === "YELLOW" ? "#eab308" : "#22c55e"));
+                        const tr = document.createElement("tr");
+                        tr.style.borderBottom = "1px solid #334155";
+                        tr.innerHTML = `
+                            <td style="padding:10px 12px; font-weight:700;">#${idx + 1}</td>
+                            <td style="padding:10px 12px; font-weight:600; color:#fff;">${z.zone_name}</td>
+                            <td style="padding:10px 12px; color:#cbd5e1;">${z.city}</td>
+                            <td style="padding:10px 12px; font-weight:800; color:#38bdf8;">${z.risk_score.toFixed(1)}</td>
+                            <td style="padding:10px 12px;">
+                                <span style="background:${badgeColor}; color:#fff; padding:2px 8px; border-radius:4px; font-weight:700; font-size:11px;">
+                                    ${z.risk_level}
+                                </span>
+                            </td>
+                            <td style="padding:10px 12px; color:#f8fafc;">${z.avg_aqi.toFixed(1)}</td>
+                            <td style="padding:10px 12px; color:#f87171; font-weight:700;">${z.complaint_count}</td>
+                            <td style="padding:10px 12px; color:#cbd5e1;">${(z.dominant_pollutant_name || "PM2.5").toUpperCase()}</td>
+                            <td style="padding:10px 12px;">
+                                ${z.compound_alert ? '<span style="background:#dc2626; color:#fff; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:800;">CRITICAL OUTBREAK</span>' : '<span style="color:#64748b;">Normal</span>'}
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to load ranked zones:", err);
+            }
+        }
+
+        async function loadAnomalies() {
+            try {
+                const res = await fetch("/api/anomalies");
+                const data = await res.json();
+                if (data.status === "success") {
+                    const tbody = document.getElementById("anomalies-table-tbody");
+                    tbody.innerHTML = "";
+                    if (!data.data || data.data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#94a3b8; padding:15px;">No statistical anomaly spikes detected.</td></tr>';
+                        return;
+                    }
+                    data.data.forEach(a => {
+                        const tr = document.createElement("tr");
+                        tr.style.borderBottom = "1px solid #334155";
+                        tr.innerHTML = `
+                            <td style="padding:10px 12px; color:#cbd5e1;">${a.date}</td>
+                            <td style="padding:10px 12px; font-weight:600; color:#fff;">${a.zone_name}</td>
+                            <td style="padding:10px 12px; color:#cbd5e1;">${a.city}</td>
+                            <td style="padding:10px 12px; font-weight:700; color:#ef4444;">${a.aqi.toFixed(1)}</td>
+                            <td style="padding:10px 12px; color:#94a3b8;">${a.rolling_mean.toFixed(1)}</td>
+                            <td style="padding:10px 12px; font-weight:800; color:#f59e0b;">+${a.z_score.toFixed(2)}σ</td>
+                            <td style="padding:10px 12px;">
+                                <span style="background:${Math.abs(a.z_score) >= 2.5 ? '#dc2626' : '#ea580c'}; color:#fff; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">
+                                    ${Math.abs(a.z_score) >= 2.5 ? 'EXTREME PLUME' : 'MODERATE SPIKE'}
+                                </span>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to load anomalies:", err);
+            }
+        }
+
+        async function loadRejectedReports() {
+            try {
+                const res = await fetch("/api/complaints/rejected?limit=15");
+                const data = await res.json();
+                if (data.status === "success") {
+                    const tbody = document.getElementById("rejected-table-tbody");
+                    tbody.innerHTML = "";
+                    if (!data.data || data.data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:15px;">No rejected complaints found.</td></tr>';
+                        return;
+                    }
+                    data.data.forEach(r => {
+                        const tr = document.createElement("tr");
+                        tr.style.borderBottom = "1px solid #334155";
+                        tr.innerHTML = `
+                            <td style="padding:10px 12px; font-family:monospace; color:#38bdf8;">${r.report_id || '--'}</td>
+                            <td style="padding:10px 12px; color:#fff;">${r.zone_name || r.zone_id}</td>
+                            <td style="padding:10px 12px; color:#cbd5e1;">${r.citizen_name || 'Anonymous'}</td>
+                            <td style="padding:10px 12px; color:#94a3b8; max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${r.description || ''}</td>
+                            <td style="padding:10px 12px; color:#f87171; font-weight:600;">${r.rejection_reason || 'FILTERED'}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to load rejected complaints:", err);
+            }
+        }
+
+        async function loadCorrelation() {
+            try {
+                const res = await fetch("/api/correlation");
+                const data = await res.json();
+                if (data.status === "success" && data.overall) {
+                    const ov = data.overall;
+                    document.getElementById("correlation-container").innerHTML = `
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:10px;">
+                            <div style="background:#1e293b; padding:10px; border-radius:6px; border:1px solid #334155;">
+                                <span style="color:#94a3b8; font-size:11px;">Same-Day Correlation (Lag 0):</span>
+                                <div style="font-size:18px; font-weight:800; color:#38bdf8;">r = ${ov.lag_0.toFixed(3)}</div>
+                            </div>
+                            <div style="background:#1e293b; padding:10px; border-radius:6px; border:1px solid #334155;">
+                                <span style="color:#94a3b8; font-size:11px;">1-Day Lag Correlation (Lag 1):</span>
+                                <div style="font-size:18px; font-weight:800; color:#38bdf8;">r = ${ov.lag_1.toFixed(3)}</div>
+                            </div>
+                            <div style="background:#1e293b; padding:10px; border-radius:6px; border:1px solid #334155;">
+                                <span style="color:#94a3b8; font-size:11px;">2-Day Lag Correlation (Lag 2):</span>
+                                <div style="font-size:18px; font-weight:800; color:#38bdf8;">r = ${ov.lag_2.toFixed(3)}</div>
+                            </div>
+                            <div style="background:#1e293b; padding:10px; border-radius:6px; border:1px solid #334155;">
+                                <span style="color:#94a3b8; font-size:11px;">3-Day Lag Correlation (Lag 3):</span>
+                                <div style="font-size:18px; font-weight:800; color:#38bdf8;">r = ${ov.lag_3.toFixed(3)}</div>
+                            </div>
+                        </div>
+                        <div style="color:#cbd5e1; font-size:12px;">
+                            <strong>Analytical Interpretation:</strong> Peak cross-correlation is <strong>r = ${ov.peak_correlation.toFixed(3)}</strong> occurring at <strong>lag ${ov.optimal_lag_days} day(s)</strong>. This confirms that respiratory and conjunctival symptoms surge approximately ${ov.optimal_lag_days * 24} hours following major toxic pollution spikes.
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error("Failed to load correlation:", err);
+            }
+        }
+    </script>
+</body>
+</html>

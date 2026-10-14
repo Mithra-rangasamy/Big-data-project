@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality & Public Health Early-Warning System | CIT 21MDS56</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="brand">
+            <span class="brand-icon">🛡️</span>
+            <div>
+                <div class="brand-title">Multi-City Air Quality & Public Health Early-Warning System</div>
+                <div class="brand-subtitle">CIT 21MDS56 Big Data Computing Laboratory &bull; Multi-Modal Hadoop/Hive/Pig/Mongo Fusion</div>
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                <span>Hadoop/Hive/Mongo Cluster Active</span>
+            </div>
+
+            <select id="date-select" class="date-select">
+                <option value="2026-10-13">Loading dates...</option>
+            </select>
+
+            <button id="btn-trigger-pipeline" class="btn btn-secondary" title="Recalculate Pig fusion engine across Hive and Mongo datasets">
+                🔄 Recalculate Fusion
+            </button>
+
+            <button id="btn-report-symptom" class="btn btn-danger">
+                🚨 Report Symptoms
+            </button>
+        </div>
+    </header>
+
+    <!-- Top Key Metrics Banner -->
+    <section class="metrics-grid">
+        <div class="metric-card">
+            <span class="metric-label">Monitored Urban Zones</span>
+            <span class="metric-value" id="metric-monitored-zones">25</span>
+            <span class="metric-sub">Across 5 Metropolitan Hubs</span>
+        </div>
+
+        <div class="metric-card">
+            <span class="metric-label">Critical / Red Zones</span>
+            <span class="metric-value badge-red" id="metric-red-zones">--</span>
+            <span class="metric-sub">Health Risk Score &ge; 75</span>
+        </div>
+
+        <div class="metric-card" id="card-compound-alerts">
+            <span class="metric-label">Active Compound Alerts</span>
+            <span class="metric-value badge-red" id="metric-compound-alerts">--</span>
+            <span class="metric-sub">High AQI + Surging Illness</span>
+        </div>
+
+        <div class="metric-card">
+            <span class="metric-label">Citizen Reports Ingested</span>
+            <span class="metric-value badge-orange" id="metric-total-complaints">--</span>
+            <span class="metric-sub">MongoDB Unstructured Telemetry</span>
+        </div>
+
+        <div class="metric-card">
+            <span class="metric-label">Peak Ambient AQI</span>
+            <span class="metric-value badge-red" id="metric-peak-aqi">--</span>
+            <span class="metric-sub" id="metric-peak-zone">Analyzing...</span>
+        </div>
+    </section>
+
+    <!-- Main Dashboard Viewport -->
+    <main class="main-content">
+        <!-- Interactive Map Section -->
+        <div class="map-container-wrapper">
+            <!-- City Quick-Zoom Toolbar -->
+            <div class="map-toolbar">
+                <button class="city-btn active" data-city="all">All India</button>
+                <button class="city-btn" data-city="coimbatore">Coimbatore</button>
+                <button class="city-btn" data-city="chennai">Chennai</button>
+                <button class="city-btn" data-city="bengaluru">Bengaluru</button>
+                <button class="city-btn" data-city="delhi">Delhi</button>
+                <button class="city-btn" data-city="mumbai">Mumbai</button>
+            </div>
+
+            <!-- Leaflet Map Container -->
+            <div id="map"></div>
+
+            <!-- Map Color Legend -->
+            <div class="map-legend">
+                <div class="legend-title">Health Risk Classification</div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background:#dc2626; box-shadow:0 0 8px #dc2626;"></span>
+                    <span>Compound Alert (Urgent Intervention)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background:#ef4444;"></span>
+                    <span>Red Zone (Severe Risk &ge; 75)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background:#f97316;"></span>
+                    <span>Orange Zone (High Risk 50-74)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background:#eab308;"></span>
+                    <span>Yellow Zone (Moderate Risk 25-49)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background:#22c55e;"></span>
+                    <span>Green Zone (Satisfactory &lt; 25)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Surveillance & Advisory Panel -->
+        <aside class="side-panel">
+            <div class="panel-tabs">
+                <button class="tab-btn active" data-tab="tab-advisories">📢 Advisories & Alerts</button>
+                <button class="tab-btn" data-tab="tab-ranking">🏛 Municipal Ranking</button>
+                <button class="tab-btn" data-tab="tab-symptoms">📊 Citizen Symptoms</button>
+            </div>
+
+            <div class="panel-body">
+                <!-- Tab 1: Plain-Language Advisories -->
+                <div id="tab-advisories" class="tab-pane active">
+                    <div id="advisories-list">
+                        <div style="color:#94a3b8; font-size:12px; text-align:center; padding:2rem;">
+                            Loading fused risk advisories...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: City & Zone Vulnerability Ranking -->
+                <div id="tab-ranking" class="tab-pane">
+                    <h4 style="font-size:0.85rem; color:#fff; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        City-Level Vulnerability Matrix
+                    </h4>
+                    <table class="ranking-table">
+                        <thead>
+                            <tr>
+                                <th>City</th>
+                                <th>Red</th>
+                                <th>Orange</th>
+                                <th>Reports</th>
+                                <th>Avg Risk</th>
+                                <th>Alert</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-tbody">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                    <div style="margin-top:1rem; font-size:0.75rem; color:#94a3b8; line-height:1.4;">
+                        <em>Prioritized based on composite risk scores computed via Apache Pig joining Hive daily aggregates and MongoDB complaint densities.</em>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Citizen Symptoms Breakdown -->
+                <div id="tab-symptoms" class="tab-pane">
+                    <h4 style="font-size:0.85rem; color:#fff; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        Reported Symptoms Breakdown (MongoDB)
+                    </h4>
+                    <div id="symptoms-bar-container">
+                        <!-- Progress bars injected dynamically -->
+                    </div>
+
+                    <h4 style="font-size:0.85rem; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        Recent Citizen Submissions
+                    </h4>
+                    <div id="recent-complaints-feed">
+                        <!-- Feed injected dynamically -->
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Modal 1: 30-Day Trend Chart & Scenario Deep-Dive -->
+    <div id="modal-trend" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title" id="modal-trend-title">Zone 30-Day Historical Trend</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div id="modal-scenario-badge" style="margin-bottom:1rem;"></div>
+            <div style="height: 320px; position: relative; margin-bottom: 1.5rem;">
+                <canvas id="trendChart"></canvas>
+            </div>
+            <div style="background:#0f172a; padding:1rem; border-radius:8px; border:1px solid #334155; font-size:0.825rem; color:#cbd5e1;">
+                <strong style="color:#38bdf8;">Multi-Modal Big Data Fusion Rationale:</strong>
+                <p style="margin-top:0.4rem; line-height:1.4;">
+                    This chart correlates 30 days of hourly sensor readings (Hive structured AQI) with citizen symptom reports (MongoDB unstructured analytics). High AQI alone triggers yellow/orange warnings, but the compound escalation engine drives the risk score into RED only when localized symptoms surge.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Citizen Symptom Report Form -->
+    <div id="modal-complaint" class="modal-overlay">
+        <div class="modal-box" style="max-width: 550px;">
+            <div class="modal-header">
+                <div class="modal-title">🚨 Report Air Quality & Health Symptoms</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="complaint-form">
+                <div class="form-group">
+                    <label class="form-label" for="report-zone-select">Select Your Zone / Locality *</label>
+                    <select id="report-zone-select" class="form-control" required>
+                        <option value="">-- Choose Monitored Zone --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="report-citizen-name">Your Name (Optional)</label>
+                    <input type="text" id="report-citizen-name" class="form-control" placeholder="e.g. Ramesh Kumar">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Symptoms Currently Experienced *</label>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="symptoms" value="cough"> 😷 Persistent Cough
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="symptoms" value="shortness_of_breath"> 🫁 Breathlessness / Wheezing
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="symptoms" value="eye_irritation"> 👁️ Eye Burning / Redness
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="symptoms" value="throat_irritation"> 🗣️ Throat Irritation / Phlegm
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="symptoms" value="chest_tightness"> 💔 Chest Tightness / Pain
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="symptoms" value="headache"> 🤕 Severe Headache / Dizziness
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Severity Level *</label>
+                    <div style="display:flex; gap:1.5rem; font-size:0.85rem;">
+                        <label style="cursor:pointer;"><input type="radio" name="severity" value="mild"> Mild</label>
+                        <label style="cursor:pointer;"><input type="radio" name="severity" value="moderate" checked> Moderate</label>
+                        <label style="cursor:pointer;"><input type="radio" name="severity" value="severe"> Severe</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="report-age-group">Age Category</label>
+                    <select id="report-age-group" class="form-control">
+                        <option value="adult">Adult (19 - 59)</option>
+                        <option value="child">Child (&lt; 12)</option>
+                        <option value="teen">Teenager (12 - 18)</option>
+                        <option value="senior">Senior Citizen (60+)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="report-desc">Additional Observations / Odor</label>
+                    <textarea id="report-desc" class="form-control" rows="2" placeholder="e.g., Heavy chemical burning smell near factory campus since 6 PM"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-danger" style="width:100%; padding:0.75rem; font-size:0.95rem; justify-content:center;">
+                    📢 Submit to Early-Warning Network
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Script -->
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

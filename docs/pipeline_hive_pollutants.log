@@ -1,0 +1,102 @@
+Connecting to jdbc:hive2://localhost:10000
+Connected to: Apache Hive (version 4.0.1)
+Driver: Hive JDBC (version 4.0.1)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://localhost:10000> SET hive.query.results.cache.enabled=false;
+No rows affected (0.061 seconds)
+0: jdbc:hive2://localhost:10000> SET hive.auto.convert.join=false;
+No rows affected (0.005 seconds)
+0: jdbc:hive2://localhost:10000> SET hive.exec.mode.local.auto=false;
+No rows affected (0.005 seconds)
+0: jdbc:hive2://localhost:10000> SET hive.exec.compress.output=false;
+No rows affected (0.004 seconds)
+0: jdbc:hive2://localhost:10000> 
+0: jdbc:hive2://localhost:10000> INSERT OVERWRITE DIRECTORY 'hdfs://localhost:90 00/data/processed/daily_pollutant_agg'
+. . . . . . . . . . . . . . . .> ROW FORMAT DELIMITED
+. . . . . . . . . . . . . . . .> FIELDS TERMINATED BY '\t'
+. . . . . . . . . . . . . . . .> SELECT 
+. . . . . . . . . . . . . . . .>     zone_id,
+. . . . . . . . . . . . . . . .>     zone_name,
+. . . . . . . . . . . . . . . .>     city,
+. . . . . . . . . . . . . . . .>     `date`,
+. . . . . . . . . . . . . . . .>     ROUND(AVG(aqi), 2) AS avg_aqi,
+. . . . . . . . . . . . . . . .>     ROUND(AVG(pm25), 2) AS avg_pm25,
+. . . . . . . . . . . . . . . .>     ROUND(AVG(pm10), 2) AS avg_pm10,
+. . . . . . . . . . . . . . . .>     ROUND(AVG(no2), 2) AS avg_no2,
+. . . . . . . . . . . . . . . .>     ROUND(AVG(so2), 2) AS avg_so2,
+. . . . . . . . . . . . . . . .>     ROUND(AVG(co), 2) AS avg_co,
+. . . . . . . . . . . . . . . .>     ROUND(AVG(o3), 2) AS avg_o3
+. . . . . . . . . . . . . . . .> FROM aqi_readings
+. . . . . . . . . . . . . . . .> GROUP BY zone_id, zone_name, city, `date`;
+INFO  : Compiling command(queryId=mithra_20261014044900_20f6dbe0-e00c-42b3-982b-56b4d6aa69ce): INSERT OVERWRITE DIRECTORY 'hdfs://localhost:9000/data/processed/daily_pollutant_agg'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+SELECT
+zone_id,
+zone_name,
+city,
+`date`,
+ROUND(AVG(aqi), 2) AS avg_aqi,
+ROUND(AVG(pm25), 2) AS avg_pm25,
+ROUND(AVG(pm10), 2) AS avg_pm10,
+ROUND(AVG(no2), 2) AS avg_no2,
+ROUND(AVG(so2), 2) AS avg_so2,
+ROUND(AVG(co), 2) AS avg_co,
+ROUND(AVG(o3), 2) AS avg_o3
+FROM aqi_readings
+GROUP BY zone_id, zone_name, city, `date`
+INFO  : No Stats for default@aqi_readings, Columns: no2, zone_id, pm25, o3, so2, aqi, pm10, zone_name, co
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:zone_id, type:string, comment:null), FieldSchema(name:zone_name, type:string, comment:null), FieldSchema(name:city, type:string, comment:null), FieldSchema(name:date, type:string, comment:null), FieldSchema(name:avg_aqi, type:double, comment:null), FieldSchema(name:avg_pm25, type:double, comment:null), FieldSchema(name:avg_pm10, type:double, comment:null), FieldSchema(name:avg_no2, type:double, comment:null), FieldSchema(name:avg_so2, type:double, comment:null), FieldSchema(name:avg_co, type:double, comment:null), FieldSchema(name:avg_o3, type:double, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=mithra_20261014044900_20f6dbe0-e00c-42b3-982b-56b4d6aa69ce); Time taken: -115.478 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=mithra_20261014044900_20f6dbe0-e00c-42b3-982b-56b4d6aa69ce): INSERT OVERWRITE DIRECTORY 'hdfs://localhost:9000/data/processed/daily_pollutant_agg'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+SELECT
+zone_id,
+zone_name,
+city,
+`date`,
+ROUND(AVG(aqi), 2) AS avg_aqi,
+ROUND(AVG(pm25), 2) AS avg_pm25,
+ROUND(AVG(pm10), 2) AS avg_pm10,
+ROUND(AVG(no2), 2) AS avg_no2,
+ROUND(AVG(so2), 2) AS avg_so2,
+ROUND(AVG(co), 2) AS avg_co,
+ROUND(AVG(o3), 2) AS avg_o3
+FROM aqi_readings
+GROUP BY zone_id, zone_name, city, `date`
+WARN  : Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. tez) or using Hive 1.X releases.
+INFO  : Query ID = mithra_20261014044900_20f6dbe0-e00c-42b3-982b-56b4d6aa69ce
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks not specified. Estimated from input data size: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1791855625879_0038
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0038/
+INFO  : Starting Job = job_1791855625879_0038, Tracking URL = http://LAPTOP-F5H4PPAE.localdomain:8088/proxy/application_1791855625879_0038/
+INFO  : Kill Command = /opt/hadoop/bin/mapred job  -kill job_1791855625879_0038
+INFO  : Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+INFO  : 2026-10-14 04:47:17,244 Stage-1 map = 0%,  reduce = 0%
+INFO  : 2026-10-14 04:47:27,690 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 11.33 sec
+INFO  : 2026-10-14 04:47:36,959 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 18.55 sec
+INFO  : MapReduce Total cumulative CPU time: 18 seconds 550 msec
+INFO  : Ended Job = job_1791855625879_0038
+INFO  : Starting task [Stage-0:MOVE] in serial mode
+INFO  : Moving data to directory hdfs://localhost:9000/data/processed/daily_pollutant_agg from hdfs://localhost:9000/data/processed/daily_pollutant_agg/.hive-staging_hive_2026-10-14_04-49-00_826_2947849646848661503-6/-ext-10000
+INFO  : MapReduce Jobs Launched: 
+INFO  : Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 18.55 sec   HDFS Read: 2350297 HDFS Write: 72723 HDFS EC Read: 0 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 18 seconds 550 msec
+INFO  : Completed executing command(queryId=mithra_20261014044900_20f6dbe0-e00c-42b3-982b-56b4d6aa69ce); Time taken: 33.745 seconds
+No rows affected (-81.727 seconds)
+0: jdbc:hive2://localhost:10000> 
+0: jdbc:hive2://localhost:10000> Closing: 0: jdbc:hive2://localhost:10000

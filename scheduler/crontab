@@ -1,0 +1,10 @@
+# CIT 21MDS56: Air Quality & Public Health Early-Warning System
+# scheduler/crontab - Cron Schedule for End-to-End Pipeline Execution
+# Runs the full Big Data fusion pipeline every 30 minutes
+
+SHELL=/bin/bash
+PATH=/opt/hadoop/bin:/opt/hadoop/sbin:/opt/hive/bin:/opt/pig/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PROJECT_DIR=/home/mithra/air-quality-ews
+
+# Run pipeline every 30 minutes and append logs to logs/pipeline_cron.log
+*/30 * * * * cd /home/mithra/air-quality-ews && ./scripts/run_pipeline.sh >> /home/mithra/air-quality-ews/logs/pipeline_cron.log 2>&1

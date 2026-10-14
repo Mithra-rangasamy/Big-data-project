@@ -1,0 +1,14 @@
+2026-10-14 08:53:56,974 [INFO] HiveClient: Refreshing Hive risk score cache from HDFS/Hive...
+2026-10-14 08:53:59,473 [INFO] HiveClient: Loaded 775 risk score records into cache across 31 dates.
+2026-10-14 08:53:59,473 [INFO] HiveClient: Loading daily pollutant aggregates from HDFS...
+2026-10-14 08:54:01,952 [INFO] HiveClient: Loaded 775 daily pollutant records into cache.
+2026-10-14 08:54:01,968 [INFO] EWSApp: Starting Multi-City Air Quality & Public Health Early-Warning System on 0.0.0.0:5000
+ * Serving Flask app 'app'
+ * Debug mode: off
+2026-10-14 08:54:01,982 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.25.173.129:5000
+2026-10-14 08:54:01,982 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2026-10-14 08:54:11,275 [INFO] werkzeug: 127.0.0.1 - - [14/Oct/2026 08:54:11] "GET /api/trends/historical HTTP/1.1" 200 -
+2026-10-14 08:54:11,297 [INFO] werkzeug: 127.0.0.1 - - [14/Oct/2026 08:54:11] "GET /trends HTTP/1.1" 200 -

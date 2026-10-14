@@ -1,0 +1,16 @@
+zone_id,zone_name,city,state,latitude,longitude,scenario,baseline_complaints_per_day,source
+DL001,"Alipur, Delhi - DPCC",Delhi,Delhi,28.6306,77.152,outbreak_sensitive,2.1,synthetic
+DL002,"Anand Vihar, Delhi - DPCC",Delhi,Delhi,28.5807,77.2374,normal,2.9,synthetic
+DL003,"Ashok Vihar, Delhi - DPCC",Delhi,Delhi,28.661,77.1594,normal,2.3,synthetic
+DL004,"Aya Nagar, Delhi - IMD",Delhi,Delhi,28.5575,77.1752,normal,2.5,synthetic
+DL005,"Bawana, Delhi - DPCC",Delhi,Delhi,28.5571,77.1729,normal,2.8,synthetic
+DL006,"Burari Crossing, Delhi - IMD",Delhi,Delhi,28.6193,77.1755,decoy_high_aqi_low_complaint,2.7,synthetic
+DL007,"CRRI Mathura Road, Delhi - IMD",Delhi,Delhi,28.651,77.1498,decoy_low_aqi_spike_complaint,3.1,synthetic
+DL008,"DTU, Delhi - CPCB",Delhi,Delhi,28.6377,77.1898,outbreak_sensitive,1.8,synthetic
+DL009,"Dr. Karni Singh Shooting Range, Delhi - DPCC",Delhi,Delhi,28.6688,77.1894,normal,1.7,synthetic
+DL010,"Dwarka-Sector 8, Delhi - DPCC",Delhi,Delhi,28.5655,77.2507,outbreak_sensitive,2.7,synthetic
+DL011,"East Arjun Nagar, Delhi - CPCB",Delhi,Delhi,28.6508,77.2366,outbreak_sensitive,2.6,synthetic
+DL012,"IGI Airport (T3), Delhi - IMD",Delhi,Delhi,28.6707,77.1944,outbreak_sensitive,2.6,synthetic
+DL013,"IHBAS, Dilshad Garden, Delhi - CPCB",Delhi,Delhi,28.6534,77.2232,outbreak_sensitive,3.2,synthetic
+DL014,"ITO, Delhi - CPCB",Delhi,Delhi,28.6232,77.2335,outbreak_sensitive,1.6,synthetic
+DL015,"Jahangirpuri, Delhi - DPCC",Delhi,Delhi,28.5812,77.1837,outbreak_sensitive,1.7,synthetic
